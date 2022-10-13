@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aca",
+    " ba",
+    " b "
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:iron_block"
+    },
+    "b": {
+      "item": "minecraft:stick"
+    },
+    "c": {
+      "item": "smashy:impact_core"
+    }
+  },
+  "result": {
+    "item": "smashy:iron_impact_hammer"
+  }
+}

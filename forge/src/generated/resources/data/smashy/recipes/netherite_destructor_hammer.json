@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aca",
+    " ba",
+    " b "
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:netherite_block"
+    },
+    "b": {
+      "item": "minecraft:stick"
+    },
+    "c": {
+      "item": "smashy:destructor_core"
+    }
+  },
+  "result": {
+    "item": "smashy:netherite_destructor_hammer"
+  }
+}

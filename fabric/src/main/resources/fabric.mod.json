@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "smashy",
+  "version": "${version}",
+  "name": "Hammers go Smash",
+  "description": "Smashy Hammers!",
+  "authors": [
+    "ErrorMikey"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "GPL3",
+  "icon": "assets/smashy/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "pro.mikey.smashy.fabric.HammersFabric"
+    ]
+  },
+  "mixins": [
+    "smashy.mixins.json",
+    "smashy-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.18.2",
+    "architectury": ">=4.9.83"
+  }
+}
