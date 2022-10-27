@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "smashy",
+  "id": "justhammers",
   "version": "${version}",
-  "name": "Hammers go Smash",
-  "description": "Smashy Hammers!",
+  "name": "Just Hammers",
+  "description": "Just Hammers!",
   "authors": [
     "ErrorMikey"
   ],
@@ -12,16 +12,16 @@
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
   "license": "GPL3",
-  "icon": "assets/smashy/icon.png",
+  "icon": "assets/justhammers/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "pro.mikey.smashy.fabric.HammersFabric"
+      "pro.mikey.justhammers.fabric.HammersFabric"
     ]
   },
   "mixins": [
-    "smashy.mixins.json",
-    "smashy-common.mixins.json"
+    "justhammers-common.mixins.json",
+    "justhammers.mixins.json"
   ],
   "depends": {
     "fabric": "*",

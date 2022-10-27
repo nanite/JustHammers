@@ -3,7 +3,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/smashy.accesswidener")
+    accessWidenerPath = file("src/main/resources/justhammers.accesswidener")
 }
 
 dependencies {

@@ -4,30 +4,30 @@ loaderVersion = "[40,)"
 license = "GPL3"
 
 [[mods]]
-modId = "smashy"
+modId = "justhammers"
 version = "${version}"
-displayName = "Hammers go Smash"
+displayName = "Just Hammers"
 authors = "ErrorMikey"
 description = '''
-Smashy hammers!
+Just hammers!
 '''
 #logoFile = ""
 
-[[dependencies.smashy]]
+[[dependencies.justhammers]]
 modId = "forge"
 mandatory = true
 versionRange = "[40,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.smashy]]
+[[dependencies.justhammers]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.18.2,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.smashy]]
+[[dependencies.justhammers]]
 modId = "architectury"
 mandatory = true
 versionRange = "[4.9.83,)"

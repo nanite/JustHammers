@@ -23,11 +23,11 @@ loom {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
-        mixinConfig "smashy-common.mixins.json"
-        mixinConfig "smashy.mixins.json"
+        mixinConfig "justhammers-common.mixins.json"
+        mixinConfig "justhammers.mixins.json"
 
         dataGen {
-            mod "smashy"
+            mod "justhammers"
         }
     }
 }
