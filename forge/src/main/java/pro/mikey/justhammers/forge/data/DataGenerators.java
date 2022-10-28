@@ -78,9 +78,9 @@ public class DataGenerators {
 
             // These kinda suck
             core(HammerItems.IMPACT_CORE, Items.REDSTONE, HammerItems.NETHERITE_HAMMER.get(), Items.IRON_BLOCK, Items.GOLD_BLOCK).save(consumer);
-            core(HammerItems.REINFORCED_CORE, Items.REDSTONE_BLOCK, HammerItems.NETHERITE_HAMMER.get(), Items.GOLD_BLOCK, Items.GOLD_BLOCK).save(consumer);
-            core(HammerItems.REINFORCED_IMPACT_CORE, Items.REDSTONE_BLOCK, HammerItems.NETHERITE_HAMMER.get(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK).save(consumer);
-            core(HammerItems.DESTRUCTOR_CORE, Items.REDSTONE_BLOCK, HammerItems.NETHERITE_HAMMER.get(), Items.DIAMOND_BLOCK, Items.DIAMOND_BLOCK).save(consumer);
+            core(HammerItems.REINFORCED_CORE, Items.REDSTONE_BLOCK, HammerItems.IMPACT_CORE.get(), Items.GOLD_BLOCK, Items.GOLD_BLOCK).save(consumer);
+            core(HammerItems.REINFORCED_IMPACT_CORE, Items.REDSTONE_BLOCK, HammerItems.REINFORCED_CORE.get(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK).save(consumer);
+            core(HammerItems.DESTRUCTOR_CORE, Items.REDSTONE_BLOCK, HammerItems.REINFORCED_IMPACT_CORE.get(), Items.DIAMOND_BLOCK, Items.DIAMOND_BLOCK).save(consumer);
         }
 
         private RecipeBuilder standardHammer(Supplier<Item> hammer, ItemLike material) {
@@ -154,6 +154,8 @@ public class DataGenerators {
             addItem(HammerItems.REINFORCED_CORE, "Reinforced Core");
             addItem(HammerItems.REINFORCED_IMPACT_CORE, "Reinforced Impact Core");
             addItem(HammerItems.DESTRUCTOR_CORE, "Destruction Core");
+
+            add("justhammers.tooltip.size", "Mines a {0}x{0}x{1} area");
 
             add("itemGroup.justhammers.justhammers_tab", "Just Hammers");
         }

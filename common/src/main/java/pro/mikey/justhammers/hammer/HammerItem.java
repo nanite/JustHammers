@@ -2,8 +2,12 @@ package pro.mikey.justhammers.hammer;
 
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -12,12 +16,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.Nullable;
 import pro.mikey.justhammers.HammerItems;
 
 import java.util.HashSet;
@@ -36,6 +42,11 @@ public class HammerItem extends DiggerItem {
 
         this.depth = depth;
         this.radius = radius;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+        list.add(new TranslatableComponent("justhammers.tooltip.size", this.radius, this.depth).withStyle(ChatFormatting.GRAY));
     }
 
     private static int computeDurability(Tier tier, int level) {
