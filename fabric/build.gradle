@@ -53,6 +53,7 @@ remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
     classifier null
+    setArchivesBaseName("${rootProject.archivesBaseName}-${project.name}") // adds fabric to the maven and curse name
 }
 
 jar {
@@ -74,13 +75,36 @@ components.java {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
-            artifactId = rootProject.archives_base_name + "-" + project.name
+            artifactId = "${rootProject.archivesBaseName}-${project.name}" // adds fabric or forge to the maven name
             from components.java
         }
     }
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
+        if (ENV.SAPS_TOKEN) {
+            maven {
+                url sapsURL
+                credentials {
+                    username = "mikeymods"
+                    password = "${ENV.SAPS_TOKEN}"
+                }
+            }
+        }
+    }
+}
+
+if (ENV.CURSEFORGE_KEY) {
+    curseforge {
+        apiKey = ENV.CURSEFORGE_KEY
+        project {
+            id = rootProject.curseforge_id
+            releaseType = "beta"
+            addGameVersion "Fabric"
+            addGameVersion "Java 17"
+            addGameVersion rootProject.minecraft_version
+            mainArtifact(remapJar.archiveFile)
+            changelog = file("./../CHANGELOG.md")
+            changelogType = 'markdown'
+        }
     }
 }

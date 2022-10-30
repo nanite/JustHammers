@@ -1,6 +1,7 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
+    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 architectury {
@@ -25,8 +26,12 @@ allprojects {
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
 
+    ext.ENV = System.getenv()
+    ext.SNAPSHOT = ENV.SNAPSHOT == "true" || ENV.SNAPSHOT == true
+    ext.MAVEN_URL = "https://maven.saps.dev/${SNAPSHOT ? "snapshots" : "releases"}"
+
     archivesBaseName = rootProject.archives_base_name
-    version = "${rootProject.mod_version}.build-preview+mc${rootProject.minecraft_version}"
+    version = "${rootProject.mod_version}${SNAPSHOT ? "-SNAPSHOT" : ""}+mc${rootProject.minecraft_version}"
     group = rootProject.maven_group
 
     repositories {

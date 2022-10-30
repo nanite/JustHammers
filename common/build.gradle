@@ -15,11 +15,20 @@ dependencies {
 publishing {
     publications {
         mavenCommon(MavenPublication) {
-            artifactId = rootProject.archives_base_name
+            artifactId = "${rootProject.archivesBaseName}-${project.name}"
             from components.java
         }
     }
 
     repositories {
+        if (ENV.SAPS_TOKEN) {
+            maven {
+                url sapsURL
+                credentials {
+                    username = "ftb"
+                    password = "${ENV.SAPS_TOKEN}"
+                }
+            }
+        }
     }
 }

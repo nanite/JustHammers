@@ -9,7 +9,7 @@ version = "${version}"
 displayName = "Just Hammers"
 authors = "ErrorMikey"
 description = '''
-Just hammers!
+Add hammers to the game that are able to mine in a 3x3, 3x3x3, 5x5x3 and finally a 5x5x5! They're pretty awesome.
 '''
 #logoFile = ""
 

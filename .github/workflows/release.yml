@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    tag:
+      - "release/1.*.*/*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: |
+      !contains(github.event.head_commit.message, '[ciskip]')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
+      - name: Publish to Maven
+        uses: gradle/gradle-build-action@v2
+        env:
+          SAPS_TOKEN: ${{ secrets.SAPS_TOKEN }}
+        with:
+          arguments: publish
+      - name: Release to Github
+        uses: "softprops/action-gh-release@v1"
+        with:
+          body_path: "./CHANGELOG.md"
+          prerelease: false
+          name: "Version ${{ github.event.release.tag_name }}"
+          files: |
+            /**/build/libs/*+@(mc+([0-9]).+([0-9]).+([0-9])).jar

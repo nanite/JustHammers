@@ -10,7 +10,7 @@ Add hammers to the game that are able to mine in a 3x3, 3x3x3, 5x5x3 and finally
 - Breaks blocks
 - Pushes blocks over
 - Move blocks! Get out my way
-- Has a stern talking to the blocks to make them behave
+- Has a stern talking to the blocks to make them stop blocking your way
 - Yeets blocks
 - Fires blocks into the void...
 
