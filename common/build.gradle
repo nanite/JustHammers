@@ -23,7 +23,7 @@ publishing {
     repositories {
         if (ENV.SAPS_TOKEN) {
             maven {
-                url sapsURL
+                url MAVEN_URL
                 credentials {
                     username = "ftb"
                     password = "${ENV.SAPS_TOKEN}"

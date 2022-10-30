@@ -83,7 +83,7 @@ publishing {
     repositories {
         if (ENV.SAPS_TOKEN) {
             maven {
-                url sapsURL
+                url MAVEN_URL
                 credentials {
                     username = "mikeymods"
                     password = "${ENV.SAPS_TOKEN}"
