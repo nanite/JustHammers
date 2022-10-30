@@ -26,7 +26,7 @@ jobs:
         env:
           SAPS_TOKEN: ${{ secrets.SAPS_TOKEN }}
         with:
-          arguments: publish
+          arguments: publish curseforge
       - name: Release to Github
         uses: "softprops/action-gh-release@v1"
         with:
@@ -34,4 +34,4 @@ jobs:
           prerelease: false
           name: "Version ${{ github.event.release.tag_name }}"
           files: |
-            /**/build/libs/*+@(mc+([0-9]).+([0-9]).+([0-9])).jar
+            ./**/build/libs/*+@(mc+([0-9]).+([0-9]).+([0-9])).jar

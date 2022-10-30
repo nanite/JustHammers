@@ -77,6 +77,10 @@ publishing {
         mavenFabric(MavenPublication) {
             artifactId = "${rootProject.archivesBaseName}-${project.name}" // adds fabric or forge to the maven name
             from components.java
+
+            if (SNAPSHOT) {
+                version = mavenVersion += "-SNAPSHOT"
+            }
         }
     }
 

@@ -96,6 +96,10 @@ publishing {
         mavenForge(MavenPublication) {
             artifactId = "${rootProject.archivesBaseName}-${project.name}"
             from components.java
+
+            if (SNAPSHOT) {
+                version = mavenVersion += "-SNAPSHOT"
+            }
         }
     }
 

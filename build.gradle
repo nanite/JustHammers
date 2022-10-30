@@ -27,11 +27,11 @@ allprojects {
     apply plugin: "maven-publish"
 
     ext.ENV = System.getenv()
-    ext.SNAPSHOT = ENV.SNAPSHOT == "true" || ENV.SNAPSHOT == true
+    ext.SNAPSHOT = ENV.SNAPSHOT != null && ENV.SNAPSHOT == "true" || ENV.SNAPSHOT == true
     ext.MAVEN_URL = "https://maven.saps.dev/${SNAPSHOT ? "snapshots" : "releases"}"
 
     archivesBaseName = rootProject.archives_base_name
-    version = "${rootProject.mod_version}${SNAPSHOT ? "-SNAPSHOT" : ""}+mc${rootProject.minecraft_version}"
+    version = "${rootProject.mod_version}+mc${rootProject.minecraft_version}"
     group = rootProject.maven_group
 
     repositories {
