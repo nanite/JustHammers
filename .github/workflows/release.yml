@@ -21,17 +21,17 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
-      - name: Publish to Maven
+      - name: Publish to Maven & Curseforge
         uses: gradle/gradle-build-action@v2
         env:
           SAPS_TOKEN: ${{ secrets.SAPS_TOKEN }}
           CURSEFORGE_KEY: ${{ secrets.CURSEFORGE_KEY }}
         with:
-          arguments: publish curseforge
+          arguments: publish curseforgePublish
       - name: Release to Github
         uses: "softprops/action-gh-release@v1"
         with:
           body_path: "./CHANGELOG.md"
           prerelease: false
           files: |
-            ./(forge|fabric)/build/libs/*+@(mc+([0-9]).+([0-9]).+([0-9])).jar
+            ./+(forge|fabric)/build/libs/*+@(mc+([0-9]).+([0-9]).+([0-9])).jar
