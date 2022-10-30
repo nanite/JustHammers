@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "release/1.*.*/*"
+      - "release/1*(.+([0-9]))/*"
 
 jobs:
   build:
