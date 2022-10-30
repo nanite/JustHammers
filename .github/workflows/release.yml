@@ -34,4 +34,4 @@ jobs:
           body_path: "./CHANGELOG.md"
           prerelease: false
           files: |
-            ./!(build)/build/libs/*+@(mc+([0-9]).+([0-9]).+([0-9])).jar
+            ./(forge|fabric)/build/libs/*+@(mc+([0-9]).+([0-9]).+([0-9])).jar
