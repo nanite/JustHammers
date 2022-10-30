@@ -25,7 +25,7 @@ publishing {
             maven {
                 url MAVEN_URL
                 credentials {
-                    username = "ftb"
+                    username = "mikeymods"
                     password = "${ENV.SAPS_TOKEN}"
                 }
             }
