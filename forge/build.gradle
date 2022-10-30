@@ -104,7 +104,7 @@ publishing {
             maven {
                 url MAVEN_URL
                 credentials {
-                    username = "mikeymods"
+                    username = "errormikey"
                     password = "${ENV.SAPS_TOKEN}"
                 }
             }
