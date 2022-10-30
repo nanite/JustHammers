@@ -18,9 +18,7 @@ publishing {
             artifactId = "${rootProject.archivesBaseName}-${project.name}"
             from components.java
 
-            if (SNAPSHOT) {
-                version = mavenVersion += "-SNAPSHOT"
-            }
+            version = MAVEN_VERSION
         }
     }
 
