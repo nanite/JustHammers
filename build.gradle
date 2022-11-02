@@ -26,7 +26,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     ext.ENV = System.getenv()
-    ext.SNAPSHOT = ENV.SNAPSHOT != null && ENV.SNAPSHOT == "true" || ENV.SNAPSHOT == true
+    ext.SNAPSHOT = ENV.SNAPSHOT != null && (ENV.SNAPSHOT == "true" || ENV.SNAPSHOT == true)
     ext.MAVEN_URL = "https://maven.saps.dev/${SNAPSHOT ? "snapshots" : "releases"}"
     ext.MAVEN_VERSION = rootProject.version + (SNAPSHOT ? "-SNAPSHOT" : "")
 

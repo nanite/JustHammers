@@ -81,7 +81,7 @@ public class HammerItem extends DiggerItem {
         }
 
         this.findAndBreakNearBlocks(pick, blockPos, hammerStack, level, livingEntity);
-        return true;
+        return super.mineBlock(hammerStack, level, blockState, blockPos, livingEntity);
     }
 
     public void findAndBreakNearBlocks(HitResult pick, BlockPos blockPos, ItemStack hammerStack, Level level, LivingEntity livingEntity) {
@@ -123,7 +123,7 @@ public class HammerItem extends DiggerItem {
             if (!player.isCreative()) {
                 targetState.spawnAfterBreak((ServerLevel) level, pos, hammerStack);
                 List<ItemStack> drops = Block.getDrops(targetState, (ServerLevel) level, pos, level.getBlockEntity(pos), livingEntity, hammerStack);
-                drops.forEach(e -> Block.popResourceFromFace(level, pos, ((BlockHitResult) pick).getDirection().getOpposite(), e));
+                drops.forEach(e -> Block.popResourceFromFace(level, pos, ((BlockHitResult) pick).getDirection(), e));
             }
             damage ++;
         }

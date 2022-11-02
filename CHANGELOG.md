@@ -1,7 +1,7 @@
 # Just Hammers Changelog
 
-## [0.1.0]
+## [0.1.1]
 
-### Added
+### Fixed
 
-- Created Just Hammers!
+- Issue causing item drops to drop in the wrong direction making it look like nothing was dropped
