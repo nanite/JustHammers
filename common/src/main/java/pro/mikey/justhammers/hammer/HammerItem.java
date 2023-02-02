@@ -2,6 +2,7 @@ package pro.mikey.justhammers.hammer;
 
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,6 +12,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DiggerItem;
@@ -19,6 +21,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.OreBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
@@ -36,17 +39,19 @@ import static pro.mikey.justhammers.HammerTags.HAMMER_NO_SMASHY;
 public class HammerItem extends DiggerItem {
     private final int depth;
     private final int radius;
+    private TagKey<Block> blocks;
 
     public HammerItem(Tier tier, int radius, int depth, int level) {
         super(1, -2.8f, tier, BlockTags.MINEABLE_WITH_PICKAXE, HammerItems.DEFAULT_PROPERTIES.durability(computeDurability(tier, level)));
 
+        this.blocks = BlockTags.MINEABLE_WITH_PICKAXE;
         this.depth = depth;
         this.radius = radius;
     }
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
-        list.add(new TranslatableComponent("justhammers.tooltip.size", this.radius, this.depth).withStyle(ChatFormatting.GRAY));
+        list.add(new TranslatableComponent("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
     }
 
     private static int computeDurability(Tier tier, int level) {
@@ -56,15 +61,32 @@ public class HammerItem extends DiggerItem {
     @Override
     public float getDestroySpeed(ItemStack itemStack, BlockState blockState) {
         if (itemStack.getMaxDamage() - itemStack.getDamageValue() <= 1) {
-            return 0f;
+            return -1f;
         }
 
         return super.getDestroySpeed(itemStack, blockState);
     }
 
+    // Called on fabric
     @Override
     public boolean isCorrectToolForDrops(BlockState blockState) {
-        return super.isCorrectToolForDrops(blockState);
+        return actualIsCorrectToolForDrops(blockState);
+    }
+
+    // Called on Forge
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        return actualIsCorrectToolForDrops(state);
+    }
+
+    private boolean actualIsCorrectToolForDrops(BlockState state) {
+        int i = this.getTier().getLevel();
+        if (i < 3 && state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
+            return false;
+        } else if (i < 2 && state.is(BlockTags.NEEDS_IRON_TOOL)) {
+            return false;
+        } else {
+            return (i >= 1 || !state.is(BlockTags.NEEDS_STONE_TOOL)) && state.is(this.blocks);
+        }
     }
 
     @Override
@@ -121,9 +143,12 @@ public class HammerItem extends DiggerItem {
             removedPos.add(pos);
             level.destroyBlock(pos, false, livingEntity);
             if (!player.isCreative()) {
-                targetState.spawnAfterBreak((ServerLevel) level, pos, hammerStack);
-                List<ItemStack> drops = Block.getDrops(targetState, (ServerLevel) level, pos, level.getBlockEntity(pos), livingEntity, hammerStack);
-                drops.forEach(e -> Block.popResourceFromFace(level, pos, ((BlockHitResult) pick).getDirection(), e));
+                boolean correctToolForDrops = hammerStack.isCorrectToolForDrops(targetState);
+                if (correctToolForDrops) {
+                    targetState.spawnAfterBreak((ServerLevel) level, pos, hammerStack);
+                    List<ItemStack> drops = Block.getDrops(targetState, (ServerLevel) level, pos, level.getBlockEntity(pos), livingEntity, hammerStack);
+                    drops.forEach(e -> Block.popResourceFromFace(level, pos, ((BlockHitResult) pick).getDirection(), e));
+                }
             }
             damage ++;
         }

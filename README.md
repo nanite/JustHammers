@@ -1,4 +1,4 @@
-![Just Hammers Header](.github/assets/header.png)
+![Just Hammers Header](.github/assets/headers.png)
 
 # Just Hammers
 
