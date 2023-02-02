@@ -1,7 +1,8 @@
 # Just Hammers Changelog
 
-## [0.1.1]
+## [0.1.2]
 
 ### Fixed
 
-- Issue causing item drops to drop in the wrong direction making it look like nothing was dropped
+- The tooltip for hammers being wrong on Fabric due to translation differences
+- We now properly check if the Hammer is the correct tool for blocks
