@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aca",
-    " ba",
-    " b "
-  ],
   "key": {
     "a": {
       "item": "minecraft:diamond_block"
@@ -16,6 +11,11 @@
       "item": "justhammers:impact_core"
     }
   },
+  "pattern": [
+    "aca",
+    " ba",
+    " b "
+  ],
   "result": {
     "item": "justhammers:diamond_impact_hammer"
   }

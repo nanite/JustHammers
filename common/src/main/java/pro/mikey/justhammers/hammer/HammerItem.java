@@ -2,13 +2,10 @@ package pro.mikey.justhammers.hammer;
 
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -21,7 +18,6 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.OreBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
@@ -51,7 +47,7 @@ public class HammerItem extends DiggerItem {
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
-        list.add(new TranslatableComponent("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
+        list.add(Component.translatable("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
     }
 
     private static int computeDurability(Tier tier, int level) {
@@ -145,7 +141,7 @@ public class HammerItem extends DiggerItem {
             if (!player.isCreative()) {
                 boolean correctToolForDrops = hammerStack.isCorrectToolForDrops(targetState);
                 if (correctToolForDrops) {
-                    targetState.spawnAfterBreak((ServerLevel) level, pos, hammerStack);
+                    targetState.spawnAfterBreak((ServerLevel) level, pos, hammerStack, true);
                     List<ItemStack> drops = Block.getDrops(targetState, (ServerLevel) level, pos, level.getBlockEntity(pos), livingEntity, hammerStack);
                     drops.forEach(e -> Block.popResourceFromFace(level, pos, ((BlockHitResult) pick).getDirection(), e));
                 }

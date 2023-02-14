@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "aaa",
-    "cbd",
-    "aaa"
-  ],
   "key": {
     "a": {
       "item": "minecraft:redstone_block"
@@ -19,6 +14,11 @@
       "item": "minecraft:diamond_block"
     }
   },
+  "pattern": [
+    "aaa",
+    "cbd",
+    "aaa"
+  ],
   "result": {
     "item": "justhammers:destructor_core"
   }

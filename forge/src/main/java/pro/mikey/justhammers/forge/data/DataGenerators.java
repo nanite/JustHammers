@@ -12,9 +12,9 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import pro.mikey.justhammers.HammerItems;
 import pro.mikey.justhammers.Hammers;
 
@@ -29,14 +29,9 @@ public class DataGenerators {
         DataGenerator generator = event.getGenerator();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
-        if (event.includeClient()) {
-            generator.addProvider(new ItemModelGen(generator, existingFileHelper));
-            generator.addProvider(new LangGen(generator));
-        }
-
-        if (event.includeServer()) {
-            generator.addProvider(new RecipeGen(generator));
-        }
+        generator.addProvider(event.includeClient(), new ItemModelGen(generator, existingFileHelper));
+        generator.addProvider(event.includeClient(), new LangGen(generator));
+        generator.addProvider(event.includeServer(), new RecipeGen(generator));
     }
 
     public static class RecipeGen extends RecipeProvider {
