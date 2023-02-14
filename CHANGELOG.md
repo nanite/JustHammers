@@ -1,8 +1,7 @@
 # Just Hammers Changelog
 
-## [0.1.2]
+## [1.0.0]
 
-### Fixed
+### Changed
 
-- The tooltip for hammers being wrong on Fabric due to translation differences
-- We now properly check if the Hammer is the correct tool for blocks
+- Updated for Minecraft 1.19.2
