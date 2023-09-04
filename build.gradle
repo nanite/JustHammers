@@ -59,7 +59,7 @@ allprojects {
 }
 
 publishMods {
-    dryRun = providers.environmentVariable("CURSEFORGE_KEY").getOrNull() == null
+    dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
     changelog = file("./CHANGELOG.md").text
     version = "${mod_version}"
     type = STABLE
@@ -77,7 +77,7 @@ publishMods {
     }
 
     def curseForgeOptions = curseforgeOptions {
-        accessToken = providers.environmentVariable("CURSEFORGE_KEY")
+        accessToken = providers.environmentVariable("CURSE_TOKEN")
         projectId = "${curseforge_id}"
         minecraftVersions.add("${minecraft_version}")
     }
