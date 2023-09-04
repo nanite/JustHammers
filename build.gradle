@@ -23,12 +23,12 @@ subprojects {
 
     publishing {
         repositories {
-            if (providers.environmentVariable("SAPS_TOKEN")) {
+            if (providers.environmentVariable("SAPS_TOKEN").isPresent()) {
                 maven {
                     url "https://maven.saps.dev/${providers.environmentVariable("SNAPSHOT").map { "snapshots" }.getOrElse("releases")}"
                     credentials {
                         username = "errormikey"
-                        password = "${providers.environmentVariable("SAPS_TOKEN")}"
+                        password = "${providers.environmentVariable("SAPS_TOKEN").get()}"
                     }
                 }
             }
