@@ -1,7 +1,7 @@
 # Just Hammers Changelog
 
-## [1.0.0]
+## [2.0.0]
 
 ### Changed
 
-- Updated for Minecraft 1.19.2
+- Updated for Minecraft 1.20.1

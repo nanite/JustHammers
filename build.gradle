@@ -91,23 +91,31 @@ publishMods {
     curseforge("curseforgeFabric") {
         from(curseForgeOptions, fabricOptions)
         requires {
+            slug = "architectury-api"
             slug = "fabric-api"
         }
     }
 
     curseforge("curseforgeForge") {
         from(curseForgeOptions, forgeOptions)
+        requires {
+            slug = "architectury-api"
+        }
     }
 
     modrinth("modrinthFabric") {
         from(modrinthOptions, fabricOptions)
         requires {
+            slug = "architectury-api"
             slug = "fabric-api"
         }
     }
 
     modrinth("modrinthForge") {
         from(modrinthOptions, forgeOptions)
+        requires {
+            slug = "architectury-api"
+        }
     }
 
     github {
