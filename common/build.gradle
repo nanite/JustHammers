@@ -17,20 +17,6 @@ publishing {
         mavenCommon(MavenPublication) {
             artifactId = "${rootProject.archivesBaseName}-${project.name}"
             from components.java
-
-            version = MAVEN_VERSION
-        }
-    }
-
-    repositories {
-        if (ENV.SAPS_TOKEN) {
-            maven {
-                url MAVEN_URL
-                credentials {
-                    username = "errormikey"
-                    password = "${ENV.SAPS_TOKEN}"
-                }
-            }
         }
     }
 }

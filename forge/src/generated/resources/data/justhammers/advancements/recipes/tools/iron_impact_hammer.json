@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "justhammers:stone_hammer"
+              "minecraft:iron_block"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:reinforced_core"
+        "recipe": "justhammers:iron_impact_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "justhammers:reinforced_core"
+      "justhammers:iron_impact_hammer"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

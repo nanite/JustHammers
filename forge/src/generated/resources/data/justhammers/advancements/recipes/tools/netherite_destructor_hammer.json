@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "justhammers:stone_hammer"
+              "minecraft:netherite_block"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:impact_core"
+        "recipe": "justhammers:netherite_destructor_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "justhammers:impact_core"
+      "justhammers:netherite_destructor_hammer"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

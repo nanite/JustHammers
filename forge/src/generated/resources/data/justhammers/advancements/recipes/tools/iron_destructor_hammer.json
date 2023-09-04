@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "minecraft:netherite_block"
+              "minecraft:iron_block"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:netherite_reinforced_hammer"
+        "recipe": "justhammers:iron_destructor_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "justhammers:netherite_reinforced_hammer"
+      "justhammers:iron_destructor_hammer"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "minecraft:netherite_ingot"
+              "minecraft:iron_ingot"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:netherite_hammer"
+        "recipe": "justhammers:iron_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "justhammers:netherite_hammer"
+      "justhammers:iron_hammer"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

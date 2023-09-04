@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "justhammers:stone_hammer"
+              "minecraft:stone"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:destructor_core"
+        "recipe": "justhammers:stone_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "justhammers:destructor_core"
+      "justhammers:stone_hammer"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

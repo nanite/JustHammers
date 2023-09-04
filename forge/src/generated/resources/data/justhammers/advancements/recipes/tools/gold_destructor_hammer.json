@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "minecraft:gold_ingot"
+              "minecraft:gold_block"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:gold_hammer"
+        "recipe": "justhammers:gold_destructor_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "justhammers:gold_hammer"
+      "justhammers:gold_destructor_hammer"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

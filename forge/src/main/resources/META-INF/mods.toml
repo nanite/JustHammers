@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[43,)"
+loaderVersion = "[47,)"
 #issueTrackerURL = ""
 license = "GPL3"
 
@@ -16,20 +16,20 @@ Add hammers to the game that are able to mine in a 3x3, 3x3x3, 5x5x3 and finally
 [[dependencies.justhammers]]
 modId = "forge"
 mandatory = true
-versionRange = "[43,)"
+versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.justhammers]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.2,)"
+versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.justhammers]]
 modId = "architectury"
 mandatory = true
-versionRange = "[6.5.69,)"
+versionRange = "[9.1.12,)"
 ordering = "AFTER"
 side = "BOTH"

@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "minecraft:stone"
+              "minecraft:diamond_block"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:stone_reinforced_hammer"
+        "recipe": "justhammers:diamond_reinforced_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "justhammers:stone_reinforced_hammer"
+      "justhammers:diamond_reinforced_hammer"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "a": {
       "item": "minecraft:gold_block"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "justhammers:gold_impact_hammer"
-  }
+  },
+  "show_notification": true
 }

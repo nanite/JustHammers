@@ -1,6 +1,7 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "1.3-SNAPSHOT" apply false
+    id "me.modmuss50.mod-publish-plugin" version "0.3.5"
 }
 
 architectury {
@@ -9,6 +10,7 @@ architectury {
 
 subprojects {
     apply plugin: "dev.architectury.loom"
+    apply plugin: "maven-publish"
 
     loom {
         silentMojangMappingsLicense()
@@ -18,17 +20,26 @@ subprojects {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
         mappings loom.officialMojangMappings()
     }
+
+    publishing {
+        repositories {
+            if (providers.environmentVariable("SAPS_TOKEN")) {
+                maven {
+                    url "https://maven.saps.dev/${providers.environmentVariable("SNAPSHOT").map { "snapshots" }.orElse("releases")}"
+                    credentials {
+                        username = "errormikey"
+                        password = "${providers.environmentVariable("SAPS_TOKEN")}"
+                    }
+                }
+            }
+        }
+    }
 }
 
 allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
-
-    ext.ENV = System.getenv()
-    ext.SNAPSHOT = ENV.SNAPSHOT != null && (ENV.SNAPSHOT == "true" || ENV.SNAPSHOT == true)
-    ext.MAVEN_URL = "https://maven.saps.dev/${SNAPSHOT ? "snapshots" : "releases"}"
-    ext.MAVEN_VERSION = rootProject.version + (SNAPSHOT ? "-SNAPSHOT" : "")
 
     archivesBaseName = rootProject.archives_base_name
     version = "${rootProject.mod_version}+mc${rootProject.minecraft_version}"
@@ -47,4 +58,66 @@ allprojects {
     }
 }
 
-task curseforgePublish
+publishMods {
+    dryRun = providers.environmentVariable("CURSEFORGE_KEY").getOrNull() == null
+    changelog = file("./CHANGELOG.md").text
+    version = "${mod_version}"
+    type = STABLE
+
+    def fabricOptions = publishOptions {
+        file = project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+        displayName = "${project.name} Fabric ${mod_version}+mc${minecraft_version}"
+        modLoaders.add("fabric")
+    }
+
+    def forgeOptions = publishOptions {
+        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
+        displayName = "${project.name} Forge ${mod_version}+mc${minecraft_version}"
+        modLoaders.add("neoforge")
+    }
+
+    def curseForgeOptions = curseforgeOptions {
+        accessToken = providers.environmentVariable("CURSEFORGE_KEY")
+        projectId = "${curseforge_id}"
+        minecraftVersions.add("${minecraft_version}")
+    }
+
+    def modrinthOptions = modrinthOptions {
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        projectId = "${modrinth_id}"
+        minecraftVersions.add("${minecraft_version}")
+    }
+
+    curseforge("curseforgeFabric") {
+        from(curseForgeOptions, fabricOptions)
+        requires {
+            slug = "fabric-api"
+        }
+    }
+
+    curseforge("curseforgeForge") {
+        from(curseForgeOptions, forgeOptions)
+    }
+
+    modrinth("modrinthFabric") {
+        from(modrinthOptions, fabricOptions)
+        requires {
+            slug = "fabric-api"
+        }
+    }
+
+    modrinth("modrinthForge") {
+        from(modrinthOptions, forgeOptions)
+    }
+
+    github {
+        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
+        additionalFiles.from project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+
+        repository = "${project.github_repo}"
+        accessToken = providers.environmentVariable("GITHUB_TOKEN")
+        commitish = providers.environmentVariable("GITHUB_SHA").orElse("dryRun")
+        tagName = providers.environmentVariable("GITHUB_REF_NAME").orElse("dryRun")
+    }
+}
+

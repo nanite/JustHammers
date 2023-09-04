@@ -1,6 +1,5 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 architectury {
@@ -46,19 +45,19 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    setArchiveClassifier "dev-shadow"
 }
 
 remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    setArchiveClassifier null
     setArchivesBaseName("${rootProject.archivesBaseName}-${project.name}") // adds fabric to the maven and curse name
 }
 
 jar {
-    classifier "dev"
+    setArchiveClassifier "dev"
 }
 
 sourcesJar {
@@ -78,38 +77,7 @@ publishing {
         mavenFabric(MavenPublication) {
             artifactId = "${rootProject.archivesBaseName}-${project.name}" // adds fabric or forge to the maven name
             from components.java
-
-            version = MAVEN_VERSION
-        }
-    }
-
-    repositories {
-        if (ENV.SAPS_TOKEN) {
-            maven {
-                url MAVEN_URL
-                credentials {
-                    username = "errormikey"
-                    password = "${ENV.SAPS_TOKEN}"
-                }
-            }
         }
     }
 }
 
-if (ENV.CURSEFORGE_KEY) {
-    curseforge {
-        apiKey = ENV.CURSEFORGE_KEY
-        project {
-            id = rootProject.curseforge_id
-            releaseType = "beta"
-            addGameVersion "Fabric"
-            addGameVersion "Java 17"
-            addGameVersion rootProject.minecraft_version
-            mainArtifact(remapJar.archiveFile)
-            changelog = file("./../CHANGELOG.md")
-            changelogType = 'markdown'
-        }
-    }
-}
-
-rootProject.tasks.curseforgePublish.dependsOn tasks.curseforge

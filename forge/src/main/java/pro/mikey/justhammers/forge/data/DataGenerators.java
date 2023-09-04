@@ -2,10 +2,8 @@ package pro.mikey.justhammers.forge.data;
 
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
@@ -27,20 +25,21 @@ public class DataGenerators {
     @SubscribeEvent
     public static void onDataGen(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
+        PackOutput output = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
-        generator.addProvider(event.includeClient(), new ItemModelGen(generator, existingFileHelper));
-        generator.addProvider(event.includeClient(), new LangGen(generator));
-        generator.addProvider(event.includeServer(), new RecipeGen(generator));
+        generator.addProvider(event.includeClient(), new ItemModelGen(output, existingFileHelper));
+        generator.addProvider(event.includeClient(), new LangGen(output));
+        generator.addProvider(event.includeServer(), new RecipeGen(output));
     }
 
     public static class RecipeGen extends RecipeProvider {
-        public RecipeGen(DataGenerator arg) {
-            super(arg);
+        public RecipeGen(PackOutput output) {
+            super(output);
         }
 
         @Override
-        protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
+        protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
             standardHammer(HammerItems.STONE_HAMMER, Items.STONE).save(consumer);
             standardHammer(HammerItems.IRON_HAMMER, Items.IRON_INGOT).save(consumer);
             standardHammer(HammerItems.GOLD_HAMMER, Items.GOLD_INGOT).save(consumer);
@@ -79,7 +78,7 @@ public class DataGenerators {
         }
 
         private RecipeBuilder standardHammer(Supplier<Item> hammer, ItemLike material) {
-            return ShapedRecipeBuilder.shaped(hammer.get())
+            return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, hammer.get())
                     .define('a', material)
                     .define('b', Items.STICK)
                     .pattern("aba")
@@ -89,7 +88,7 @@ public class DataGenerators {
         }
 
         private RecipeBuilder coreHammer(Supplier<Item> hammer, Supplier<Item> core, ItemLike material) {
-            return ShapedRecipeBuilder.shaped(hammer.get())
+            return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, hammer.get())
                     .define('a', material)
                     .define('b', Items.STICK)
                     .define('c', core.get())
@@ -100,7 +99,7 @@ public class DataGenerators {
         }
 
         private RecipeBuilder core(Supplier<Item> result, Item outside, Item inside, Item left, Item right) {
-            return ShapedRecipeBuilder.shaped(result.get())
+            return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result.get())
                     .define('a', outside)
                     .define('b', inside)
                     .define('c', left)
@@ -113,8 +112,8 @@ public class DataGenerators {
     }
 
     public static class LangGen extends LanguageProvider {
-        public LangGen(DataGenerator gen) {
-            super(gen, Hammers.MOD_ID, "en_us");
+        public LangGen(PackOutput output) {
+            super(output, Hammers.MOD_ID, "en_us");
         }
 
         @Override
@@ -150,15 +149,15 @@ public class DataGenerators {
             addItem(HammerItems.REINFORCED_IMPACT_CORE, "Reinforced Impact Core");
             addItem(HammerItems.DESTRUCTOR_CORE, "Destruction Core");
 
-            add("justhammers.tooltip.size", "Mines a {0}x{0}x{1} area");
+            add("justhammers.tooltip.size", "Mines a %sx%sx%s area");
 
             add("itemGroup.justhammers.justhammers_tab", "Just Hammers");
         }
     }
 
     public static class ItemModelGen extends ItemModelProvider {
-        public ItemModelGen(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-            super(generator, Hammers.MOD_ID, existingFileHelper);
+        public ItemModelGen(PackOutput output, ExistingFileHelper existingFileHelper) {
+            super(output, Hammers.MOD_ID, existingFileHelper);
         }
 
         @Override

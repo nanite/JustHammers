@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "equipment",
   "key": {
     "a": {
       "item": "minecraft:gold_ingot"
@@ -15,5 +16,6 @@
   ],
   "result": {
     "item": "justhammers:gold_hammer"
-  }
+  },
+  "show_notification": true
 }

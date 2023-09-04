@@ -1,6 +1,5 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 architectury {
@@ -8,15 +7,21 @@ architectury {
     forge()
 }
 
-//sourceSets.main.resources { srcDir '../common/src/main/resources' }
-//sourceSets.main.resources { srcDir 'src/generated/resources' }
+repositories {
+    maven {
+        url "https://maven.neoforged.net/releases"
+    }
+}
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
-    launches {
+    runs {
         data {
-            arg "--existing", file("../common/src/main/resources").absolutePath
+            data()
+            programArgs "--all", "--mod", "justhammers"
+            programArgs "--existing", file("../common/src/main/resources").absolutePath
+//            programArgs "--output", generatedResources.absolutePath
         }
     }
 
@@ -42,7 +47,7 @@ configurations {
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+    forge "net.neoforged:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
@@ -66,18 +71,18 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    setArchiveClassifier "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    setArchiveClassifier null
     setArchivesBaseName("${rootProject.archivesBaseName}-${project.name}") // adds fabric to the maven and curse name
 }
 
 jar {
-    classifier "dev"
+    setArchiveClassifier "dev"
 }
 
 sourcesJar {
@@ -97,38 +102,6 @@ publishing {
         mavenForge(MavenPublication) {
             artifactId = "${rootProject.archivesBaseName}-${project.name}"
             from components.java
-
-            version = MAVEN_VERSION
-        }
-    }
-
-    repositories {
-        if (ENV.SAPS_TOKEN) {
-            maven {
-                url MAVEN_URL
-                credentials {
-                    username = "errormikey"
-                    password = "${ENV.SAPS_TOKEN}"
-                }
-            }
         }
     }
 }
-
-if (ENV.CURSEFORGE_KEY) {
-    curseforge {
-        apiKey = ENV.CURSEFORGE_KEY
-        project {
-            id = rootProject.curseforge_id
-            releaseType = "release"
-            addGameVersion "Forge"
-            addGameVersion "Java 17"
-            addGameVersion rootProject.minecraft_version
-            mainArtifact(remapJar.archiveFile)
-            changelog = file("./../CHANGELOG.md")
-            changelogType = 'markdown'
-        }
-    }
-}
-
-rootProject.tasks.curseforgePublish.dependsOn tasks.curseforge

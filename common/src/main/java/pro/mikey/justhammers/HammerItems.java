@@ -2,18 +2,17 @@ package pro.mikey.justhammers;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
-import pro.mikey.justhammers.hammer.HammerItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface HammerItems {
-    Item.Properties DEFAULT_PROPERTIES = new Item.Properties().tab(Hammers.CREATIVE_TAB);
-    DeferredRegister<Item> ITEMS = DeferredRegister.create(Hammers.MOD_ID, Registry.ITEM_REGISTRY);
+    Item.Properties DEFAULT_PROPERTIES = new Item.Properties().arch$tab(Hammers.TAB);
+    DeferredRegister<Item> ITEMS = DeferredRegister.create(Hammers.MOD_ID, Registries.ITEM);
 
     List<RegistrySupplier<Item>> HAMMERS = new ArrayList<>();
 
