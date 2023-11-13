@@ -28,13 +28,13 @@ import java.util.Set;
 
 import static pro.mikey.justhammers.HammerTags.HAMMER_NO_SMASHY;
 
-public class HammerItem extends DiggerItem {
+public class HammerItem extends PickaxeItem {
     private final int depth;
     private final int radius;
     private TagKey<Block> blocks;
 
     public HammerItem(Tier tier, int radius, int depth, int level) {
-        super(1, -2.8f, tier, BlockTags.MINEABLE_WITH_PICKAXE, HammerItems.DEFAULT_PROPERTIES.durability(computeDurability(tier, level)));
+        super(tier, 1, -2.8f, HammerItems.DEFAULT_PROPERTIES.durability(computeDurability(tier, level)));
 
         this.blocks = BlockTags.MINEABLE_WITH_PICKAXE;
         this.depth = depth;
