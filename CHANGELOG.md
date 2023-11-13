@@ -1,7 +1,8 @@
 # Just Hammers Changelog
 
-## [2.0.0]
+## [2.0.1]
 
-### Changed
+### Fixed
 
-- Updated for Minecraft 1.20.1
+- Forge compatibility with modded enchantments. Thanks to ([#11](https://github.com/ErrorMikey/JustHammers/pull/11)) [[allanf181](https://github.com/allanf181)]
+- Hammers able to break blocks higher than their tier and voiding those blocks. Thanks to ([#10](https://github.com/ErrorMikey/JustHammers/pull/10)) [[Sisko](https://github.com/CaptainSisko)]
