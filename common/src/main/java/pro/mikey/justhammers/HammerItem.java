@@ -125,6 +125,10 @@ public class HammerItem extends PickaxeItem {
             if (pos == blockPos || removedPos.contains(pos) || !canDestroy(targetState, level, pos)) {
                 continue;
             }
+            // Skips any blocks that require a higher tier hammer
+            if (!actualIsCorrectToolForDrops(targetState)) {
+                continue;
+            }
 
             // Throw event out there and let mods block us breaking this block
             EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(level, pos, targetState, (ServerPlayer) livingEntity, null);
