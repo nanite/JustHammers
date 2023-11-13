@@ -150,7 +150,7 @@ public class DataGenerators {
             addItem(HammerItems.REINFORCED_IMPACT_CORE, "Reinforced Impact Core");
             addItem(HammerItems.DESTRUCTOR_CORE, "Destruction Core");
 
-            add("justhammers.tooltip.size", "Mines a {0}x{0}x{1} area");
+            add("justhammers.tooltip.size", "Mines a %sx%sx%s area");
 
             add("itemGroup.justhammers.justhammers_tab", "Just Hammers");
         }

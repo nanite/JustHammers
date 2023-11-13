@@ -21,16 +21,4 @@ publishing {
             version = MAVEN_VERSION
         }
     }
-
-    repositories {
-        if (ENV.SAPS_TOKEN) {
-            maven {
-                url MAVEN_URL
-                credentials {
-                    username = "errormikey"
-                    password = "${ENV.SAPS_TOKEN}"
-                }
-            }
-        }
-    }
 }
