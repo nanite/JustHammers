@@ -23,12 +23,12 @@ subprojects {
 
     publishing {
         repositories {
-            if (providers.environmentVariable("SAPS_TOKEN")) {
+            if (providers.environmentVariable("SAPS_TOKEN").isPresent()) {
                 maven {
                     url "https://maven.saps.dev/${providers.environmentVariable("SNAPSHOT").map { "snapshots" }.getOrElse("releases")}"
                     credentials {
                         username = "errormikey"
-                        password = "${providers.environmentVariable("SAPS_TOKEN")}"
+                        password = "${providers.environmentVariable("SAPS_TOKEN").get()}"
                     }
                 }
             }
@@ -59,7 +59,7 @@ allprojects {
 }
 
 publishMods {
-    dryRun = providers.environmentVariable("CURSEFORGE_KEY").getOrNull() == null
+    dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
     changelog = file("./CHANGELOG.md").text
     version = "${mod_version}"
     type = STABLE
@@ -77,7 +77,7 @@ publishMods {
     }
 
     def curseForgeOptions = curseforgeOptions {
-        accessToken = providers.environmentVariable("CURSEFORGE_KEY")
+        accessToken = providers.environmentVariable("CURSE_TOKEN")
         projectId = "${curseforge_id}"
         minecraftVersions.add("${minecraft_version}")
     }
