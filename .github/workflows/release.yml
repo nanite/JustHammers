@@ -8,30 +8,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: |
-      !contains(github.event.head_commit.message, '[ciskip]')
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK
+      - name: Set up JDK  17
         uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
           java-version: '17'
-      - name: Build with Gradle
+          distribution: 'temurin'
+      - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
-      - name: Publish to Maven & Curseforge
-        uses: gradle/gradle-build-action@v2
+      - name: Build & Publish
+        run: ./gradlew build publish publishMods --no-daemon
         env:
           SAPS_TOKEN: ${{ secrets.SAPS_TOKEN }}
-          CURSEFORGE_KEY: ${{ secrets.CURSEFORGE_KEY }}
-        with:
-          arguments: publish curseforgePublish
-      - name: Release to Github
-        uses: "softprops/action-gh-release@v1"
-        with:
-          body_path: "./CHANGELOG.md"
-          prerelease: false
-          files: |
-            ./+(forge|fabric)/build/libs/*+@(mc+([0-9]).+([0-9]).+([0-9])).jar
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CURSE_TOKEN: ${{ secrets.CURSEFORGE_KEY }}
