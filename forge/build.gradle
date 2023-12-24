@@ -22,22 +22,12 @@ loom {
         }
     }
 
-//    launches {
-//        data {
-//            arg "--existing", file("../common/src/main/resources").absolutePath
-//        }
-//    }
-
     forge {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
         mixinConfig "justhammers-common.mixins.json"
         mixinConfig "justhammers.mixins.json"
-
-        dataGen {
-            mod "justhammers"
-        }
     }
 }
 
