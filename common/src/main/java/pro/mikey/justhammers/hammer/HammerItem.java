@@ -85,35 +85,56 @@ public class HammerItem extends PickaxeItem {
         }
     }
 
-    @Override
-    public boolean mineBlock(ItemStack hammerStack, Level level, BlockState blockState, BlockPos blockPos, LivingEntity livingEntity) {
-        if (level.isClientSide || blockState.getDestroySpeed(level, blockPos) == 0.0F) {
-            return true;
+    public void causeAoe(Level level, BlockPos pos, BlockState state, ItemStack hammer, LivingEntity livingEntity) {
+        if (!(livingEntity instanceof ServerPlayer player)) return;
+
+        if (level.isClientSide || state.getDestroySpeed(level, pos) == 0.0F) {
+            return;
         }
 
-        HitResult pick = livingEntity.pick(20D, 1F, false);
+        if (livingEntity.isCrouching()) {
+            return;
+        }
+
+        HitResult pick = livingEntity.pick(20D, 0.0F, false);
 
         // Not possible?
-        if (!(pick instanceof BlockHitResult)) {
-            return super.mineBlock(hammerStack, level, blockState, blockPos, livingEntity);
+        if (!(pick instanceof BlockHitResult blockHitResult)) {
+            return;
         }
 
-        this.findAndBreakNearBlocks(pick, blockPos, hammerStack, level, livingEntity);
-        return super.mineBlock(hammerStack, level, blockState, blockPos, livingEntity);
+        this.findAndBreakNearBlocks(blockHitResult, pos, hammer, level, livingEntity);
+
+        // If the hammer is within 5% of durability remaining, warn the player
+        if (hammer.getDamageValue() >= hammer.getMaxDamage() * 0.95) {
+            if (!hammer.getOrCreateTag().contains("has_been_warned")) {
+                player.sendSystemMessage(Component.translatable("justhammers.tooltip.durability_warning").withStyle(ChatFormatting.RED), true);
+                hammer.getOrCreateTag().putBoolean("has_been_warned", true);
+            }
+        } else {
+            if (hammer.getOrCreateTag().contains("has_been_warned")) {
+                hammer.getOrCreateTag().remove("has_been_warned");
+            }
+        }
     }
 
-    public void findAndBreakNearBlocks(HitResult pick, BlockPos blockPos, ItemStack hammerStack, Level level, LivingEntity livingEntity) {
+    public void findAndBreakNearBlocks(BlockHitResult pick, BlockPos blockPos, ItemStack hammerStack, Level level, LivingEntity livingEntity) {
         if (!(livingEntity instanceof ServerPlayer player)) return;
 
         var size = (radius / 2);
         var offset = size - 1;
 
-        Direction direction = ((BlockHitResult) pick).getDirection();
+        Direction direction = pick.getDirection();
         var boundingBox = switch (direction) {
             case DOWN, UP -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - (direction == Direction.UP ? depth - 1 : 0), blockPos.getZ() - size, blockPos.getX() + size, blockPos.getY() + (direction == Direction.DOWN ? depth - 1 : 0), blockPos.getZ() + size);
             case NORTH, SOUTH -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - size + offset, blockPos.getZ() - (direction == Direction.SOUTH ? depth - 1 : 0), blockPos.getX() + size, blockPos.getY() + size + offset, blockPos.getZ() + (direction == Direction.NORTH ? depth - 1 : 0));
             case WEST, EAST -> new BoundingBox(blockPos.getX() - (direction == Direction.EAST ? depth - 1 : 0), blockPos.getY() - size + offset, blockPos.getZ() - size, blockPos.getX() + (direction == Direction.WEST ? depth - 1 : 0), blockPos.getY() + size + offset, blockPos.getZ() + size);
         };
+
+        // If the hammer is about to break, Stop. We don't want to break the hammer
+        if (hammerStack.getDamageValue() >= hammerStack.getMaxDamage() - 1) {
+            return;
+        }
 
         int damage = 0;
         Iterator<BlockPos> iterator = BlockPos.betweenClosedStream(boundingBox).iterator();
@@ -121,7 +142,8 @@ public class HammerItem extends PickaxeItem {
         while (iterator.hasNext()) {
             var pos = iterator.next();
 
-            if (damage >= (hammerStack.getMaxDamage() - hammerStack.getDamageValue() - 1)) {
+            // Prevent the hammer from breaking if the damage is too high
+            if ((hammerStack.getDamageValue() + (damage + 1)) >= hammerStack.getMaxDamage() - 1) {
                 break;
             }
 
@@ -129,6 +151,7 @@ public class HammerItem extends PickaxeItem {
             if (pos == blockPos || removedPos.contains(pos) || !canDestroy(targetState, level, pos)) {
                 continue;
             }
+
             // Skips any blocks that require a higher tier hammer
             if (!actualIsCorrectToolForDrops(targetState)) {
                 continue;
@@ -150,6 +173,7 @@ public class HammerItem extends PickaxeItem {
                     drops.forEach(e -> Block.popResourceFromFace(level, pos, ((BlockHitResult) pick).getDirection(), e));
                 }
             }
+
             damage ++;
         }
 
