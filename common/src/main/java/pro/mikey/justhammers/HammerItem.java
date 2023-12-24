@@ -70,16 +70,22 @@ public class HammerItem extends PickaxeItem {
 
     private static String prettyDurability(int durability) {
         String[] units = {"", "k", "m"};
-        int unitIndex = 0;
-
         double displayDurability = durability;
 
-        while (displayDurability >= 1000 && unitIndex < units.length - 1) {
-            displayDurability /= 1000;
-            unitIndex++;
+        int unitIndex = durability > 0 ? (int) (Math.log10(durability) / 3) : 0;
+        if (unitIndex >= units.length) {
+            unitIndex = units.length - 1;
         }
 
-        return String.format("%.2f", displayDurability) + units[unitIndex];
+        displayDurability /= Math.pow(1000, unitIndex);
+
+        var output = String.format("%.2f", displayDurability);
+        // Remove trailing .00
+        if (output.endsWith(".00")) {
+            output = output.substring(0, output.length() - 3);
+        }
+
+        return output + units[unitIndex];
     }
 
     private static int computeDurability(Tier tier, int level) {
@@ -111,7 +117,7 @@ public class HammerItem extends PickaxeItem {
         return actualIsCorrectToolForDrops(state);
     }
 
-    private boolean actualIsCorrectToolForDrops(BlockState state) {
+    public boolean actualIsCorrectToolForDrops(BlockState state) {
         int i = this.getTier().getLevel();
         if (i < 3 && state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
             return false;
@@ -158,18 +164,11 @@ public class HammerItem extends PickaxeItem {
     public void findAndBreakNearBlocks(BlockHitResult pick, BlockPos blockPos, ItemStack hammerStack, Level level, LivingEntity livingEntity) {
         if (!(livingEntity instanceof ServerPlayer player)) return;
 
-        var size = (radius / 2);
-        var offset = size - 1;
-
         Direction direction = pick.getDirection();
-        var boundingBox = switch (direction) {
-            case DOWN, UP -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - (direction == Direction.UP ? depth - 1 : 0), blockPos.getZ() - size, blockPos.getX() + size, blockPos.getY() + (direction == Direction.DOWN ? depth - 1 : 0), blockPos.getZ() + size);
-            case NORTH, SOUTH -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - size + offset, blockPos.getZ() - (direction == Direction.SOUTH ? depth - 1 : 0), blockPos.getX() + size, blockPos.getY() + size + offset, blockPos.getZ() + (direction == Direction.NORTH ? depth - 1 : 0));
-            case WEST, EAST -> new BoundingBox(blockPos.getX() - (direction == Direction.EAST ? depth - 1 : 0), blockPos.getY() - size + offset, blockPos.getZ() - size, blockPos.getX() + (direction == Direction.WEST ? depth - 1 : 0), blockPos.getY() + size + offset, blockPos.getZ() + size);
-        };
+        var boundingBox = getAreaOfEffect(blockPos, direction, radius, depth);
 
         // If the hammer is about to break, Stop. We don't want to break the hammer
-        if (hammerStack.getDamageValue() >= hammerStack.getMaxDamage() - 1) {
+        if (!player.isCreative() && (hammerStack.getDamageValue() >= hammerStack.getMaxDamage() - 1)) {
             return;
         }
 
@@ -180,7 +179,7 @@ public class HammerItem extends PickaxeItem {
             var pos = iterator.next();
 
             // Prevent the hammer from breaking if the damage is too high
-            if ((hammerStack.getDamageValue() + (damage + 1)) >= hammerStack.getMaxDamage() - 1) {
+            if (!player.isCreative() && (hammerStack.getDamageValue() + (damage + 1)) >= hammerStack.getMaxDamage() - 1) {
                 break;
             }
 
@@ -221,6 +220,17 @@ public class HammerItem extends PickaxeItem {
         }
     }
 
+    public static BoundingBox getAreaOfEffect(BlockPos blockPos, Direction direction, int radius, int depth) {
+        var size = (radius / 2);
+        var offset = size - 1;
+
+        return switch (direction) {
+            case DOWN, UP -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - (direction == Direction.UP ? depth - 1 : 0), blockPos.getZ() - size, blockPos.getX() + size, blockPos.getY() + (direction == Direction.DOWN ? depth - 1 : 0), blockPos.getZ() + size);
+            case NORTH, SOUTH -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - size + offset, blockPos.getZ() - (direction == Direction.SOUTH ? depth - 1 : 0), blockPos.getX() + size, blockPos.getY() + size + offset, blockPos.getZ() + (direction == Direction.NORTH ? depth - 1 : 0));
+            case WEST, EAST -> new BoundingBox(blockPos.getX() - (direction == Direction.EAST ? depth - 1 : 0), blockPos.getY() - size + offset, blockPos.getZ() - size, blockPos.getX() + (direction == Direction.WEST ? depth - 1 : 0), blockPos.getY() + size + offset, blockPos.getZ() + size);
+        };
+    }
+
     private boolean canDestroy(BlockState targetState, Level level, BlockPos pos) {
         if (targetState.getDestroySpeed(level, pos) <= 0) {
             return false;
@@ -231,5 +241,13 @@ public class HammerItem extends PickaxeItem {
         }
 
         return level.getBlockEntity(pos) == null;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public int getRadius() {
+        return radius;
     }
 }
