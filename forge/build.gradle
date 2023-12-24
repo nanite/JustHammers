@@ -21,9 +21,15 @@ loom {
             data()
             programArgs "--all", "--mod", "justhammers"
             programArgs "--existing", file("../common/src/main/resources").absolutePath
-//            programArgs "--output", generatedResources.absolutePath
+            programArgs "--output", file("src/generated/resources").absolutePath
         }
     }
+
+//    launches {
+//        data {
+//            arg "--existing", file("../common/src/main/resources").absolutePath
+//        }
+//    }
 
     forge {
         convertAccessWideners = true
