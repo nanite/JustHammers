@@ -1,6 +1,7 @@
 package pro.mikey.justhammers.forge.data;
 
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -16,7 +17,7 @@ import net.minecraftforge.fml.common.Mod;
 import pro.mikey.justhammers.HammerItems;
 import pro.mikey.justhammers.Hammers;
 
-import java.util.function.Consumer;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -27,19 +28,20 @@ public class DataGenerators {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
         generator.addProvider(event.includeClient(), new ItemModelGen(output, existingFileHelper));
         generator.addProvider(event.includeClient(), new LangGen(output));
-        generator.addProvider(event.includeServer(), new RecipeGen(output));
+        generator.addProvider(event.includeServer(), new RecipeGen(output, lookupProvider));
     }
 
     public static class RecipeGen extends RecipeProvider {
-        public RecipeGen(PackOutput output) {
+        public RecipeGen(PackOutput output, CompletableFuture<HolderLookup.Provider> holder) {
             super(output);
         }
 
         @Override
-        protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
+        protected void buildRecipes(RecipeOutput consumer) {
             standardHammer(HammerItems.STONE_HAMMER, Items.STONE).save(consumer);
             standardHammer(HammerItems.IRON_HAMMER, Items.IRON_INGOT).save(consumer);
             standardHammer(HammerItems.GOLD_HAMMER, Items.GOLD_INGOT).save(consumer);

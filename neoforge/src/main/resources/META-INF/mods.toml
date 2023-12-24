@@ -1,7 +1,8 @@
 modLoader = "javafml"
-loaderVersion = "[48,)"
+loaderVersion = "[1,)"
 #issueTrackerURL = ""
 license = "GPL3"
+
 
 [[mods]]
 modId = "justhammers"
@@ -14,9 +15,9 @@ Add hammers to the game that are able to mine in a 3x3, 3x3x3, 5x5x3 and finally
 #logoFile = ""
 
 [[dependencies.justhammers]]
-modId = "forge"
+modId = "neoforge"
 mandatory = true
-versionRange = "[48,)"
+versionRange = "[20.2,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -33,3 +34,9 @@ mandatory = true
 versionRange = "[10.0.17,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[mixins]]
+config = "justhammers.mixins.json"
+
+[[mixins]]
+config = "justhammers-common.mixins.json"
