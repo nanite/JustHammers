@@ -21,7 +21,7 @@ loom {
             data()
             programArgs "--all", "--mod", "justhammers"
             programArgs "--existing", file("../common/src/main/resources").absolutePath
-//            programArgs "--output", generatedResources.absolutePath
+            programArgs "--output", file("src/generated/resources").absolutePath
         }
     }
 
@@ -31,10 +31,6 @@ loom {
 
         mixinConfig "justhammers-common.mixins.json"
         mixinConfig "justhammers.mixins.json"
-
-        dataGen {
-            mod "justhammers"
-        }
     }
 }
 

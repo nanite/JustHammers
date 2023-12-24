@@ -44,10 +44,57 @@ public class HammerItem extends PickaxeItem {
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
         list.add(Component.translatable("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
+
+        int damage = itemStack.getDamageValue();
+        int maxDamage = itemStack.getMaxDamage();
+        int durabilityPercentage = (int) (((float) (maxDamage - damage) / (float) maxDamage) * 100);
+
+        // Start the color at green and go to red as the durability decreases
+        var color = ChatFormatting.GREEN;
+        if (durabilityPercentage <= 50) {
+            if (durabilityPercentage <= 25) {
+                color = ChatFormatting.RED;
+            } else {
+                color = ChatFormatting.YELLOW;
+            }
+        }
+
+        int remaining = durabilityPercentage / 20;
+        var percentComponent = Component.literal(prettyDurability(damage) + "/" + prettyDurability(maxDamage) + " ")
+                .append(Component.literal("*".repeat(remaining)).withStyle(color))
+                .append(Component.literal("*".repeat(5 - remaining)).withStyle(ChatFormatting.GRAY))
+                .append(Component.literal(" (" + durabilityPercentage + "%)").withStyle(ChatFormatting.GRAY));
+
+        list.add(percentComponent);
+    }
+
+    private static String prettyDurability(int durability) {
+        String[] units = {"", "k", "m"};
+        double displayDurability = durability;
+
+        int unitIndex = durability > 0 ? (int) (Math.log10(durability) / 3) : 0;
+        if (unitIndex >= units.length) {
+            unitIndex = units.length - 1;
+        }
+
+        displayDurability /= Math.pow(1000, unitIndex);
+
+        var output = String.format("%.2f", displayDurability);
+        // Remove trailing .00
+        if (output.endsWith(".00")) {
+            output = output.substring(0, output.length() - 3);
+        }
+
+        return output + units[unitIndex];
     }
 
     private static int computeDurability(Tier tier, int level) {
-        return ((tier.getUses() * 2) + (200 * level)) * level;
+        var baseModified = 0;
+        if (level > 1) {
+            // If we're above level 1 then the durability should be AT LEAST the durability of the netherite hammer
+            baseModified = Tiers.NETHERITE.getUses();
+        }
+        return baseModified + ((int) (tier.getUses() * 2.5F) + (200 * level)) * level;
     }
 
     @Override
@@ -70,7 +117,7 @@ public class HammerItem extends PickaxeItem {
         return actualIsCorrectToolForDrops(state);
     }
 
-    private boolean actualIsCorrectToolForDrops(BlockState state) {
+    public boolean actualIsCorrectToolForDrops(BlockState state) {
         int i = this.getTier().getLevel();
         if (i < 3 && state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
             return false;
@@ -81,35 +128,49 @@ public class HammerItem extends PickaxeItem {
         }
     }
 
-    @Override
-    public boolean mineBlock(ItemStack hammerStack, Level level, BlockState blockState, BlockPos blockPos, LivingEntity livingEntity) {
-        if (level.isClientSide || blockState.getDestroySpeed(level, blockPos) == 0.0F) {
-            return true;
-        }
-
-        HitResult pick = livingEntity.pick(20D, 1F, false);
-
-        // Not possible?
-        if (!(pick instanceof BlockHitResult)) {
-            return super.mineBlock(hammerStack, level, blockState, blockPos, livingEntity);
-        }
-
-        this.findAndBreakNearBlocks(pick, blockPos, hammerStack, level, livingEntity);
-        return super.mineBlock(hammerStack, level, blockState, blockPos, livingEntity);
-    }
-
-    public void findAndBreakNearBlocks(HitResult pick, BlockPos blockPos, ItemStack hammerStack, Level level, LivingEntity livingEntity) {
+    public void causeAoe(Level level, BlockPos pos, BlockState state, ItemStack hammer, LivingEntity livingEntity) {
         if (!(livingEntity instanceof ServerPlayer player)) return;
 
-        var size = (radius / 2);
-        var offset = size - 1;
+        if (level.isClientSide || state.getDestroySpeed(level, pos) == 0.0F) {
+            return;
+        }
 
-        Direction direction = ((BlockHitResult) pick).getDirection();
-        var boundingBox = switch (direction) {
-            case DOWN, UP -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - (direction == Direction.UP ? depth - 1 : 0), blockPos.getZ() - size, blockPos.getX() + size, blockPos.getY() + (direction == Direction.DOWN ? depth - 1 : 0), blockPos.getZ() + size);
-            case NORTH, SOUTH -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - size + offset, blockPos.getZ() - (direction == Direction.SOUTH ? depth - 1 : 0), blockPos.getX() + size, blockPos.getY() + size + offset, blockPos.getZ() + (direction == Direction.NORTH ? depth - 1 : 0));
-            case WEST, EAST -> new BoundingBox(blockPos.getX() - (direction == Direction.EAST ? depth - 1 : 0), blockPos.getY() - size + offset, blockPos.getZ() - size, blockPos.getX() + (direction == Direction.WEST ? depth - 1 : 0), blockPos.getY() + size + offset, blockPos.getZ() + size);
-        };
+        if (livingEntity.isCrouching()) {
+            return;
+        }
+
+        HitResult pick = livingEntity.pick(20D, 0.0F, false);
+
+        // Not possible?
+        if (!(pick instanceof BlockHitResult blockHitResult)) {
+            return;
+        }
+
+        this.findAndBreakNearBlocks(blockHitResult, pos, hammer, level, livingEntity);
+
+        // If the hammer is within 5% of durability remaining, warn the player
+        if (hammer.getDamageValue() >= hammer.getMaxDamage() * 0.95) {
+            if (!hammer.getOrCreateTag().contains("has_been_warned")) {
+                player.sendSystemMessage(Component.translatable("justhammers.tooltip.durability_warning").withStyle(ChatFormatting.RED), true);
+                hammer.getOrCreateTag().putBoolean("has_been_warned", true);
+            }
+        } else {
+            if (hammer.getOrCreateTag().contains("has_been_warned")) {
+                hammer.getOrCreateTag().remove("has_been_warned");
+            }
+        }
+    }
+
+    public void findAndBreakNearBlocks(BlockHitResult pick, BlockPos blockPos, ItemStack hammerStack, Level level, LivingEntity livingEntity) {
+        if (!(livingEntity instanceof ServerPlayer player)) return;
+
+        Direction direction = pick.getDirection();
+        var boundingBox = getAreaOfEffect(blockPos, direction, radius, depth);
+
+        // If the hammer is about to break, Stop. We don't want to break the hammer
+        if (!player.isCreative() && (hammerStack.getDamageValue() >= hammerStack.getMaxDamage() - 1)) {
+            return;
+        }
 
         int damage = 0;
         Iterator<BlockPos> iterator = BlockPos.betweenClosedStream(boundingBox).iterator();
@@ -117,7 +178,8 @@ public class HammerItem extends PickaxeItem {
         while (iterator.hasNext()) {
             var pos = iterator.next();
 
-            if (damage >= (hammerStack.getMaxDamage() - hammerStack.getDamageValue() - 1)) {
+            // Prevent the hammer from breaking if the damage is too high
+            if (!player.isCreative() && (hammerStack.getDamageValue() + (damage + 1)) >= hammerStack.getMaxDamage() - 1) {
                 break;
             }
 
@@ -125,6 +187,7 @@ public class HammerItem extends PickaxeItem {
             if (pos == blockPos || removedPos.contains(pos) || !canDestroy(targetState, level, pos)) {
                 continue;
             }
+
             // Skips any blocks that require a higher tier hammer
             if (!actualIsCorrectToolForDrops(targetState)) {
                 continue;
@@ -146,6 +209,7 @@ public class HammerItem extends PickaxeItem {
                     drops.forEach(e -> Block.popResourceFromFace(level, pos, ((BlockHitResult) pick).getDirection(), e));
                 }
             }
+
             damage ++;
         }
 
@@ -154,6 +218,17 @@ public class HammerItem extends PickaxeItem {
                 livingEntityx.broadcastBreakEvent(EquipmentSlot.MAINHAND);
             });
         }
+    }
+
+    public static BoundingBox getAreaOfEffect(BlockPos blockPos, Direction direction, int radius, int depth) {
+        var size = (radius / 2);
+        var offset = size - 1;
+
+        return switch (direction) {
+            case DOWN, UP -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - (direction == Direction.UP ? depth - 1 : 0), blockPos.getZ() - size, blockPos.getX() + size, blockPos.getY() + (direction == Direction.DOWN ? depth - 1 : 0), blockPos.getZ() + size);
+            case NORTH, SOUTH -> new BoundingBox(blockPos.getX() - size, blockPos.getY() - size + offset, blockPos.getZ() - (direction == Direction.SOUTH ? depth - 1 : 0), blockPos.getX() + size, blockPos.getY() + size + offset, blockPos.getZ() + (direction == Direction.NORTH ? depth - 1 : 0));
+            case WEST, EAST -> new BoundingBox(blockPos.getX() - (direction == Direction.EAST ? depth - 1 : 0), blockPos.getY() - size + offset, blockPos.getZ() - size, blockPos.getX() + (direction == Direction.WEST ? depth - 1 : 0), blockPos.getY() + size + offset, blockPos.getZ() + size);
+        };
     }
 
     private boolean canDestroy(BlockState targetState, Level level, BlockPos pos) {
@@ -166,5 +241,13 @@ public class HammerItem extends PickaxeItem {
         }
 
         return level.getBlockEntity(pos) == null;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public int getRadius() {
+        return radius;
     }
 }
