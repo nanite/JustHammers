@@ -92,6 +92,8 @@ publishMods {
         from(curseForgeOptions, fabricOptions)
         requires {
             slug = "architectury-api"
+        }
+        requires {
             slug = "fabric-api"
         }
     }
@@ -107,6 +109,9 @@ publishMods {
         from(modrinthOptions, fabricOptions)
         requires {
             slug = "architectury-api"
+        }
+
+        requires {
             slug = "fabric-api"
         }
     }
