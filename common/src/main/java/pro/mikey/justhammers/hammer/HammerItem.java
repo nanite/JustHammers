@@ -12,10 +12,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.PickaxeItem;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,10 +45,51 @@ public class HammerItem extends PickaxeItem {
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
         list.add(Component.translatable("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
+
+        int damage = itemStack.getDamageValue();
+        int maxDamage = itemStack.getMaxDamage();
+        int durabilityPercentage = (int) (((float) (maxDamage - damage) / (float) maxDamage) * 100);
+
+        // Start the color at green and go to red as the durability decreases
+        var color = ChatFormatting.GREEN;
+        if (durabilityPercentage <= 50) {
+            if (durabilityPercentage <= 25) {
+                color = ChatFormatting.RED;
+            } else {
+                color = ChatFormatting.YELLOW;
+            }
+        }
+
+        int remaining = durabilityPercentage / 20;
+        var percentComponent = Component.literal(prettyDurability(damage) + "/" + prettyDurability(maxDamage) + " ")
+                .append(Component.literal("*".repeat(remaining)).withStyle(color))
+                .append(Component.literal("*".repeat(5 - remaining)).withStyle(ChatFormatting.GRAY))
+                .append(Component.literal(" (" + durabilityPercentage + "%)").withStyle(ChatFormatting.GRAY));
+
+        list.add(percentComponent);
+    }
+
+    private static String prettyDurability(int durability) {
+        String[] units = {"", "k", "m"};
+        int unitIndex = 0;
+
+        double displayDurability = durability;
+
+        while (displayDurability >= 1000 && unitIndex < units.length - 1) {
+            displayDurability /= 1000;
+            unitIndex++;
+        }
+
+        return String.format("%.2f", displayDurability) + units[unitIndex];
     }
 
     private static int computeDurability(Tier tier, int level) {
-        return ((tier.getUses() * 2) + (200 * level)) * level;
+        var baseModified = 0;
+        if (level > 1) {
+            // If we're above level 1 then the durability should be AT LEAST the durability of the netherite hammer
+            baseModified = Tiers.NETHERITE.getUses();
+        }
+        return baseModified + ((int) (tier.getUses() * 2.5F) + (200 * level)) * level;
     }
 
     @Override
