@@ -45,19 +45,19 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    setArchiveClassifier "dev-shadow"
 }
 
 remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    setArchiveClassifier null
     setArchivesBaseName("${rootProject.archivesBaseName}-${project.name}") // adds fabric to the maven and curse name
 }
 
 jar {
-    classifier "dev"
+    setArchiveClassifier "dev"
 }
 
 sourcesJar {

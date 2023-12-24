@@ -13,11 +13,20 @@ architectury {
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
-    launches {
+    runs {
         data {
-            arg "--existing", file("../common/src/main/resources").absolutePath
+            data()
+            programArgs "--all", "--mod", "justhammers"
+            programArgs "--existing", file("../common/src/main/resources").absolutePath
+            programArgs "--output", file("src/generated/resources").absolutePath
         }
     }
+
+//    launches {
+//        data {
+//            arg "--existing", file("../common/src/main/resources").absolutePath
+//        }
+//    }
 
     forge {
         convertAccessWideners = true
@@ -65,18 +74,18 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    setArchiveClassifier "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    setArchiveClassifier null
     setArchivesBaseName("${rootProject.archivesBaseName}-${project.name}") // adds fabric to the maven and curse name
 }
 
 jar {
-    classifier "dev"
+    setArchiveClassifier "dev"
 }
 
 sourcesJar {
