@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import pro.mikey.justhammers.hammer.HammerItem;
+import pro.mikey.justhammers.HammerItem;
 
 /**
  * Forge and fabric seem to have different source sets so this is required... Fun
