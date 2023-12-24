@@ -16,6 +16,9 @@
   "entrypoints": {
     "main": [
       "pro.mikey.justhammers.fabric.HammersFabric"
+    ],
+    "client": [
+      "pro.mikey.justhammers.fabric.HammersFabricClient"
     ]
   },
   "mixins": [
