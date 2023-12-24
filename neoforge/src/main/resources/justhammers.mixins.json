@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "pro.mikey.justhammers.neoforge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "ServerPlayerGameModeMixinNeoForge"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

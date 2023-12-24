@@ -9,8 +9,6 @@ pluginManagement {
     }
 }
 
-include("common")
-include("fabric")
-include("forge")
+include "common", "forge", "neoforge", "fabric"
 
 rootProject.name = "just-hammers"
