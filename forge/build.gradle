@@ -7,9 +7,6 @@ architectury {
     forge()
 }
 
-//sourceSets.main.resources { srcDir '../common/src/main/resources' }
-//sourceSets.main.resources { srcDir 'src/generated/resources' }
-
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
@@ -18,7 +15,7 @@ loom {
             data()
             programArgs "--all", "--mod", "justhammers"
             programArgs "--existing", file("../common/src/main/resources").absolutePath
-            programArgs "--output", file("src/generated/resources").absolutePath
+            programArgs "--output", file("../common/src/generated/resources").absolutePath
         }
     }
 
