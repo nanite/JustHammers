@@ -146,6 +146,7 @@ publishMods {
     github {
         file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
         additionalFiles.from project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+        additionalFiles.from project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
 
         repository = "${project.github_repo}"
         accessToken = providers.environmentVariable("GITHUB_TOKEN")
