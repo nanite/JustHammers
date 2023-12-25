@@ -1,5 +1,12 @@
 # Just Hammers Changelog
 
+## [82.0.1]
+
+### Fixed
+
+- Removed mixin debugs
+- Fixed render issues with neoforge
+
 ## [82.0.0]
 
 ### Changed
