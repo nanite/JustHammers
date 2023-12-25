@@ -60,6 +60,8 @@ remapJar {
     dependsOn shadowJar
     setArchiveClassifier null
     setArchivesBaseName("${rootProject.archivesBaseName}-${project.name}") // adds fabric to the maven and curse name
+
+    atAccessWideners.add('justhammers.accesswidener')
 }
 
 jar {
