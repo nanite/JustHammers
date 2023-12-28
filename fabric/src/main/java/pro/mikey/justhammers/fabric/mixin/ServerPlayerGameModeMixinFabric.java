@@ -18,7 +18,6 @@ import pro.mikey.justhammers.HammerItem;
 /**
  * Forge and fabric seem to have different source sets so this is required... Fun
  */
-@Debug(export = true)
 @Mixin(ServerPlayerGameMode.class)
 public class ServerPlayerGameModeMixinFabric {
     @Shadow @Final protected ServerPlayer player;

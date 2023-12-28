@@ -60,7 +60,7 @@ allprojects {
 
 publishMods {
     dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
-    changelog = file("./CHANGELOG.md").text
+    changelog = file("./CHANGELOG.md").text.replace("# Just Hammers Changelog", "").trim()
     version = "${mod_version}"
     type = STABLE
 
@@ -146,6 +146,9 @@ publishMods {
     github {
         file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
         additionalFiles.from project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+        additionalFiles.from project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
+
+        announcementTitle = "[${minecraft_version}] Just Hammers ${mod_version}"
 
         repository = "${project.github_repo}"
         accessToken = providers.environmentVariable("GITHUB_TOKEN")
