@@ -23,4 +23,4 @@ jobs:
           NANITE_TOKEN: ${{ secrets.NANITE_DEPLOY }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CURSE_TOKEN: ${{ secrets.CURSEFORGE_KEY }}
+          CURSE_TOKEN: ${{ secrets.CURSE_DEPLOY }}
