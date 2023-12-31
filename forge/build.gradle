@@ -13,6 +13,8 @@ repositories {
     }
 }
 
+sourceSets.main.resources.srcDirs += file('src/generated/resources')
+
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
