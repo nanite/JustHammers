@@ -20,7 +20,7 @@ jobs:
       - name: Build & Publish
         run: ./gradlew build publish publishMods --no-daemon
         env:
-          SAPS_TOKEN: ${{ secrets.SAPS_TOKEN }}
+          NANITE_TOKEN: ${{ secrets.NANITE_DEPLOY }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CURSE_TOKEN: ${{ secrets.CURSEFORGE_KEY }}
