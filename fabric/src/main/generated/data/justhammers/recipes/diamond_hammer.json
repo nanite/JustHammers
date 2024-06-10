@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "a": {
+      "item": "minecraft:diamond"
+    },
+    "b": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "aba",
+    " ba",
+    " b "
+  ],
+  "result": {
+    "count": 1,
+    "id": "justhammers:diamond_hammer"
+  }
+}

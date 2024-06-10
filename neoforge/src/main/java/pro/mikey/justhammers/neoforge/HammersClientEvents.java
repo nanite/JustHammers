@@ -3,11 +3,11 @@ package pro.mikey.justhammers.neoforge;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import pro.mikey.justhammers.client.SelectionOutlineRender;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
+@EventBusSubscriber(value = Dist.CLIENT)
 public class HammersClientEvents {
     @SubscribeEvent
     public static void onWorldRenderLast(RenderLevelStageEvent event) {

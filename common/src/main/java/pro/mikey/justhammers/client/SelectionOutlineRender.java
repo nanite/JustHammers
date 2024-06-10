@@ -59,7 +59,8 @@ public class SelectionOutlineRender {
 
         // Get the block at the pos
         var block = world.getBlockState(blockPos);
-        if (!hammer.actualIsCorrectToolForDrops(block) || block.is(HammerTags.HAMMER_NO_SMASHY)) {
+        var incorrectFor = hammer.getTier().getIncorrectBlocksForDrops();
+        if (block.is(incorrectFor) || block.is(HammerTags.HAMMER_NO_SMASHY)) {
             return;
         }
 

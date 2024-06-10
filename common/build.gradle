@@ -6,8 +6,6 @@ loom {
     accessWidenerPath = file("src/main/resources/justhammers.accesswidener")
 }
 
-sourceSets.main.resources.srcDirs += file("src/generated/resources")
-
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"

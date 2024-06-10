@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "a": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "b": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "aba",
+    " ba",
+    " b "
+  ],
+  "result": {
+    "count": 1,
+    "id": "justhammers:netherite_hammer"
+  }
+}

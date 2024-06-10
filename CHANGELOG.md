@@ -1,7 +1,7 @@
 # Just Hammers Changelog
 
-## [84.0.0]
+## [20.6.0]
 
 ### Changed
 
-- Ported to 1.20.4
+- Ported to 1.20.6

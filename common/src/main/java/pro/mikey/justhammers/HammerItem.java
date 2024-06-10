@@ -13,12 +13,14 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
@@ -31,18 +33,19 @@ import static pro.mikey.justhammers.HammerTags.HAMMER_NO_SMASHY;
 public class HammerItem extends PickaxeItem {
     private final int depth;
     private final int radius;
-    private TagKey<Block> blocks;
 
     public HammerItem(Tier tier, int radius, int depth, int level) {
-        super(tier, 1, -2.8f, HammerItems.DEFAULT_PROPERTIES.durability(computeDurability(tier, level)));
+        super(new WrappedTier(tier, computeDurability(tier, level)),
+                HammerItems.DEFAULT_PROPERTIES
+                        .durability(computeDurability(tier, level))
+                        .attributes(PickaxeItem.createAttributes(tier, 1, -2.8f)));
 
-        this.blocks = BlockTags.MINEABLE_WITH_PICKAXE;
         this.depth = depth;
         this.radius = radius;
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
         list.add(Component.translatable("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
 
         int damage = itemStack.getDamageValue();
@@ -106,30 +109,8 @@ public class HammerItem extends PickaxeItem {
         return super.getDestroySpeed(itemStack, blockState);
     }
 
-    // Called on fabric
-    @Override
-    public boolean isCorrectToolForDrops(BlockState blockState) {
-        return actualIsCorrectToolForDrops(blockState);
-    }
-
-    // Called on Forge
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return actualIsCorrectToolForDrops(state);
-    }
-
-    public boolean actualIsCorrectToolForDrops(BlockState state) {
-        int i = this.getTier().getLevel();
-        if (i < 3 && state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
-            return false;
-        } else if (i < 2 && state.is(BlockTags.NEEDS_IRON_TOOL)) {
-            return false;
-        } else {
-            return (i >= 1 || !state.is(BlockTags.NEEDS_STONE_TOOL)) && state.is(this.blocks);
-        }
-    }
-
     public void causeAoe(Level level, BlockPos pos, BlockState state, ItemStack hammer, LivingEntity livingEntity) {
-        if (!(livingEntity instanceof ServerPlayer player)) return;
+        if (!(livingEntity instanceof ServerPlayer)) return;
 
         if (level.isClientSide || state.getDestroySpeed(level, pos) == 0.0F) {
             return;
@@ -147,18 +128,6 @@ public class HammerItem extends PickaxeItem {
         }
 
         this.findAndBreakNearBlocks(blockHitResult, pos, hammer, level, livingEntity);
-
-        // If the hammer is within 5% of durability remaining, warn the player
-        if (hammer.getDamageValue() >= hammer.getMaxDamage() * 0.95) {
-            if (!hammer.getOrCreateTag().contains("has_been_warned")) {
-                player.sendSystemMessage(Component.translatable("justhammers.tooltip.durability_warning").withStyle(ChatFormatting.RED), true);
-                hammer.getOrCreateTag().putBoolean("has_been_warned", true);
-            }
-        } else {
-            if (hammer.getOrCreateTag().contains("has_been_warned")) {
-                hammer.getOrCreateTag().remove("has_been_warned");
-            }
-        }
     }
 
     public void findAndBreakNearBlocks(BlockHitResult pick, BlockPos blockPos, ItemStack hammerStack, Level level, LivingEntity livingEntity) {
@@ -189,7 +158,8 @@ public class HammerItem extends PickaxeItem {
             }
 
             // Skips any blocks that require a higher tier hammer
-            if (!actualIsCorrectToolForDrops(targetState)) {
+            var incorrectBlocksForDrops = this.getTier().getIncorrectBlocksForDrops();
+            if (targetState.is(incorrectBlocksForDrops)) {
                 continue;
             }
 
@@ -214,9 +184,7 @@ public class HammerItem extends PickaxeItem {
         }
 
         if (damage != 0 && !player.isCreative()) {
-            hammerStack.hurtAndBreak(damage, livingEntity, (livingEntityx) -> {
-                livingEntityx.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-            });
+            hammerStack.hurtAndBreak(damage, livingEntity, EquipmentSlot.MAINHAND);
         }
     }
 
@@ -249,5 +217,40 @@ public class HammerItem extends PickaxeItem {
 
     public int getRadius() {
         return radius;
+    }
+
+    private record WrappedTier(
+            Tier tier,
+            int durability
+    ) implements Tier {
+        @Override
+        public int getUses() {
+            return durability;
+        }
+
+        @Override
+        public float getSpeed() {
+            return tier.getSpeed();
+        }
+
+        @Override
+        public float getAttackDamageBonus() {
+            return tier.getAttackDamageBonus();
+        }
+
+        @Override
+        public @NotNull TagKey<Block> getIncorrectBlocksForDrops() {
+            return tier.getIncorrectBlocksForDrops();
+        }
+
+        @Override
+        public int getEnchantmentValue() {
+            return tier.getEnchantmentValue();
+        }
+
+        @Override
+        public @NotNull Ingredient getRepairIngredient() {
+            return tier.getRepairIngredient();
+        }
     }
 }

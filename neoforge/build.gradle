@@ -9,7 +9,7 @@ architectury {
 
 repositories {
     maven {
-        url "https://maven.saps.dev/mirror"
+        url "https://maven.neoforged.net/releases"
     }
 }
 
@@ -18,6 +18,8 @@ loom {
 
     neoForge {}
 }
+
+sourceSets.main.resources.srcDirs += project(":fabric").file("src/main/generated")
 
 configurations {
     common
@@ -42,7 +44,7 @@ processResources {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     inputs.property "version", project.version
 
-    filesMatching("META-INF/mods.toml") {
+    filesMatching("META-INF/neoforge.mods.toml") {
         expand "version": project.version
     }
 }

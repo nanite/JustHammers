@@ -19,6 +19,9 @@
     ],
     "client": [
       "pro.mikey.justhammers.fabric.HammersFabricClient"
+    ],
+    "fabric-datagen": [
+      "pro.mikey.justhammers.fabric.DataGenerators"
     ]
   },
   "mixins": [
