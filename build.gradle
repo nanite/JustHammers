@@ -1,7 +1,7 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
-    id "me.modmuss50.mod-publish-plugin" version "0.4.5"
+    id "me.modmuss50.mod-publish-plugin" version "0.5.1"
 }
 
 architectury {
@@ -23,12 +23,12 @@ subprojects {
 
     publishing {
         repositories {
-            if (providers.environmentVariable("SAPS_TOKEN").isPresent()) {
+            if (providers.environmentVariable("NANITE_DEPLOY").isPresent()) {
                 maven {
-                    url "https://maven.saps.dev/${providers.environmentVariable("SNAPSHOT").map { "snapshots" }.getOrElse("releases")}"
+                    url "https://maven.nanite.dev/${providers.environmentVariable("SNAPSHOT").map { "snapshots" }.getOrElse("releases")}"
                     credentials {
-                        username = "errormikey"
-                        password = "${providers.environmentVariable("SAPS_TOKEN").get()}"
+                        username = "nanite"
+                        password = "${providers.environmentVariable("NANITE_DEPLOY").get()}"
                     }
                 }
             }
@@ -86,6 +86,7 @@ publishMods {
         accessToken = providers.environmentVariable("CURSE_TOKEN")
         projectId = "${curseforge_id}"
         minecraftVersions.add("${minecraft_version}")
+        javaVersions.add(JavaVersion.VERSION_21)
     }
 
     def modrinthOptions = modrinthOptions {
@@ -96,12 +97,8 @@ publishMods {
 
     curseforge("curseforgeFabric") {
         from(curseForgeOptions, fabricOptions)
-        requires {
-            slug = "architectury-api"
-        }
-        requires {
-            slug = "fabric-api"
-        }
+        requires("architectury-api")
+        requires("fabric-api")
     }
 
 //    curseforge("curseforgeForge") {
@@ -113,20 +110,13 @@ publishMods {
 
     curseforge("curseforgeNeoForge") {
         from(curseForgeOptions, neoForge)
-        requires {
-            slug = "architectury-api"
-        }
+        requires("architectury-api")
     }
 
     modrinth("modrinthFabric") {
         from(modrinthOptions, fabricOptions)
-        requires {
-            slug = "architectury-api"
-        }
-
-        requires {
-            slug = "fabric-api"
-        }
+        requires("architectury-api")
+        requires("fabric-api")
     }
 
 //    modrinth("modrinthForge") {
@@ -138,9 +128,7 @@ publishMods {
 
     modrinth("modrinthNeoforge") {
         from(modrinthOptions, neoForge)
-        requires {
-            slug = "architectury-api"
-        }
+        requires("architectury-api")
     }
 
     github {
