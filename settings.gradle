@@ -4,11 +4,12 @@ pluginManagement {
         maven { url "https://maven.fabricmc.net/" }
         maven { url "https://maven.architectury.dev/" }
         maven { url "https://maven.minecraftforge.net/" }
+        maven { url "https://maven.saps.dev/releases" }
+        maven { url "https://maven.saps.dev/snapshots" }
         gradlePluginPortal()
     }
 }
 
-//include "common", "forge", "neoforge", "fabric"
 include "common", "neoforge", "fabric"
 
 rootProject.name = "just-hammers"

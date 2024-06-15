@@ -2,6 +2,7 @@ plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.6-SNAPSHOT" apply false
     id "me.modmuss50.mod-publish-plugin" version "0.5.1"
+    id 'pro.mikey.plugins.insaniam' version "0.1-SNAPSHOT"
 }
 
 architectury {
@@ -58,27 +59,28 @@ allprojects {
     }
 }
 
+def changelogData = insaniamUtils.createChangelog {
+    file = file('CHANGELOG.md')
+    versionPattern = ~/## \[[^]]+]/
+    fallbackValue = "No changelog provided"
+    version = project.mod_version
+}
+
 publishMods {
     dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
-    changelog = file("./CHANGELOG.md").text.replace("# Just Hammers Changelog", "").trim()
+    changelog = changelogData.replace("# Just Hammers Changelog", "").trim()
     version = "${mod_version}"
     type = STABLE
 
     def fabricOptions = publishOptions {
         file = project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
-        displayName = "[FABRIC][${minecraft_version}] ${project.name} ${mod_version}"
+        displayName = "[FABRIC] Just Hammers ${mod_version}"
         modLoaders.add("fabric")
     }
 
-//    def forgeOptions = publishOptions {
-//        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
-//        displayName = "[FORGE][${minecraft_version}] ${project.name} ${mod_version}"
-//        modLoaders.add("forge")
-//    }
-
     def neoForge = publishOptions {
         file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
-        displayName = "[NEOFORGE][${minecraft_version}] ${project.name} ${mod_version}"
+        displayName = "[NEOFORGE] Just Hammers ${mod_version}"
         modLoaders.add("neoforge")
     }
 
@@ -101,13 +103,6 @@ publishMods {
         requires("fabric-api")
     }
 
-//    curseforge("curseforgeForge") {
-//        from(curseForgeOptions, forgeOptions)
-//        requires {
-//            slug = "architectury-api"
-//        }
-//    }
-
     curseforge("curseforgeNeoForge") {
         from(curseForgeOptions, neoForge)
         requires("architectury-api")
@@ -118,13 +113,6 @@ publishMods {
         requires("architectury-api")
         requires("fabric-api")
     }
-
-//    modrinth("modrinthForge") {
-//        from(modrinthOptions, forgeOptions)
-//        requires {
-//            slug = "architectury-api"
-//        }
-//    }
 
     modrinth("modrinthNeoforge") {
         from(modrinthOptions, neoForge)

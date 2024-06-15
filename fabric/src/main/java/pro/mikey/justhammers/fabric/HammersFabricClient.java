@@ -12,7 +12,7 @@ public class HammersFabricClient implements ClientModInitializer {
     }
 
     private boolean renderSelectionOutline(WorldRenderContext worldRenderContext, WorldRenderContext.BlockOutlineContext blockOutlineContext) {
-        SelectionOutlineRender.render(worldRenderContext.world(), worldRenderContext.camera(), worldRenderContext.tickDelta(), worldRenderContext.matrixStack(), worldRenderContext.consumers(), worldRenderContext.gameRenderer(), worldRenderContext.projectionMatrix(), worldRenderContext.lightmapTextureManager(), worldRenderContext.worldRenderer());
+        SelectionOutlineRender.render(worldRenderContext.world(), worldRenderContext.camera(), worldRenderContext.tickCounter(), worldRenderContext.matrixStack(), worldRenderContext.consumers(), worldRenderContext.gameRenderer(), worldRenderContext.projectionMatrix(), worldRenderContext.lightmapTextureManager(), worldRenderContext.worldRenderer());
         return true;
     }
 }

@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[2,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/nanite/JustHammers/issues"
 license = "GPL3"
 
 
@@ -12,26 +12,26 @@ authors = "ErrorMikey"
 description = '''
 Add hammers to the game that are able to mine in a 3x3, 3x3x3, 5x5x3 and finally a 5x5x5! They\'re pretty awesome.
 '''
-#logoFile = ""
+displayURL = "https://github.com/nanite/JustHammers"
 
 [[dependencies.justhammers]]
 modId = "neoforge"
 required = true
-versionRange = "[20.6,)"
+versionRange = "[21.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.justhammers]]
 modId = "minecraft"
 required = true
-versionRange = "[1.20.6,)"
+versionRange = "[1.21,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.justhammers]]
 modId = "architectury"
 required = true
-versionRange = "[11.0.9,)"
+versionRange = "[13.0.0,)"
 ordering = "AFTER"
 side = "BOTH"
 

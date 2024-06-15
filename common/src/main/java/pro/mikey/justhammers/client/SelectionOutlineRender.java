@@ -2,10 +2,13 @@ package pro.mikey.justhammers.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -17,7 +20,7 @@ import java.util.Iterator;
 
 public class SelectionOutlineRender {
 
-    public static void render(ClientLevel world, Camera camera, float v, PoseStack poseStack, MultiBufferSource consumers, GameRenderer gameRenderer, Matrix4f matrix4f, LightTexture lightTexture, LevelRenderer levelRenderer) {
+    public static void render(ClientLevel world, Camera camera, DeltaTracker v, PoseStack poseStack, MultiBufferSource consumers, GameRenderer gameRenderer, Matrix4f matrix4f, LightTexture lightTexture, LevelRenderer levelRenderer) {
         // Get the player
         if (world == null) {
             return;
@@ -78,7 +81,9 @@ public class SelectionOutlineRender {
                 continue;
             }
 
-            if (world.getBlockState(pos).isAir()) {
+            BlockState blockState = world.getBlockState(pos);
+            FluidState fluidState = blockState.getFluidState();
+            if (blockState.isAir() || (!fluidState.isEmpty())) {
                 continue;
             }
 
