@@ -2,6 +2,10 @@
 
 ## [21.0.2]
 
+### Added
+
+- Added a config option to disable the hammers durability from being shown in the tooltip [#22](https://github.com/nanite/JustHammers/issues/22)
+
 ### Changed
 
 - You can now enchant hammers with all the same enchantments as pickaxes [#29](https://github.com/nanite/JustHammers/issues/29)

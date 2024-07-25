@@ -7,6 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import pro.mikey.justhammers.config.SimpleJsonConfig;
 
 public class Hammers {
     public static final String MOD_ID = "justhammers";
@@ -18,6 +19,7 @@ public class Hammers {
     ));
 
     public static void init() {
+        SimpleJsonConfig.INSTANCE.load();
         CREATIVE_TABS.register();
         HammerItems.ITEMS.register();
         HammerItems.init();

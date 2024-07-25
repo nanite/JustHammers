@@ -23,6 +23,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pro.mikey.justhammers.config.SimpleJsonConfig;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,6 +51,10 @@ public class HammerItem extends PickaxeItem {
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
         list.add(Component.translatable("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
+
+        if (SimpleJsonConfig.INSTANCE.disabledDurabilityTooltip.get().getAsBoolean()) {
+            return;
+        }
 
         int damage = Math.max(0, itemStack.getDamageValue());
         int maxDamage = itemStack.getMaxDamage();
