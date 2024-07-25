@@ -7,11 +7,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Matrix4f;
 import pro.mikey.justhammers.HammerItem;
 import pro.mikey.justhammers.HammerTags;
@@ -87,13 +90,16 @@ public class SelectionOutlineRender {
                 continue;
             }
 
+            // Get the shame of the block
+            VoxelShape renderShape = blockState.getVisualShape(world, pos, CollisionContext.empty());
+
             poseStack.pushPose();
             // Shift the pose stack to the block's position
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
             LevelRenderer.renderShape(
                     poseStack,
                     consumers.getBuffer(RenderType.lines()),
-                    Shapes.block(),
+                    renderShape,
                     // Location
                     0, 0, 0,
                     // Color
