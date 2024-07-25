@@ -2,11 +2,15 @@
 
 ## [21.0.2]
 
+### Changed
+
+- You can now enchant hammers with all the same enchantments as pickaxes [#29](https://github.com/nanite/JustHammers/issues/29)
+
 ### Fixed
 
 - Hammer cores acting as hammers [#37](https://github.com/nanite/JustHammers/issues/37)
 - Hammers would apply one extra damage on break due to the hammer trying to break the same block twice [#36](https://github.com/nanite/JustHammers/issues/36)
-- 
+- Hammers will no longer void blocks like dirt and sand but will break slower like in vanilla [#35](https://github.com/nanite/JustHammers/issues/35)
 
 ## [21.0.1]
 

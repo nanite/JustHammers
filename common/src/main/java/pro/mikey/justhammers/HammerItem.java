@@ -5,6 +5,7 @@ import dev.architectury.event.events.common.BlockEvent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,7 +39,9 @@ public class HammerItem extends PickaxeItem {
         super(new WrappedTier(tier, computeDurability(tier, level)),
                 new Item.Properties().arch$tab(Hammers.TAB)
                         .durability(computeDurability(tier, level))
-                        .attributes(PickaxeItem.createAttributes(tier, 1, -2.8f)));
+                        .attributes(PickaxeItem.createAttributes(tier, 1, -2.8f))
+                        .component(DataComponents.TOOL, tier.createToolProperties(BlockTags.MINEABLE_WITH_PICKAXE))
+        );
 
         this.depth = depth;
         this.radius = radius;
@@ -177,11 +180,11 @@ public class HammerItem extends PickaxeItem {
             removedPos.add(pos);
             level.destroyBlock(pos, false, livingEntity);
             if (!player.isCreative()) {
-                boolean correctToolForDrops = hammerStack.isCorrectToolForDrops(targetState);
+                boolean correctToolForDrops = player.hasCorrectToolForDrops(targetState);
                 if (correctToolForDrops) {
                     targetState.spawnAfterBreak((ServerLevel) level, pos, hammerStack, true);
                     List<ItemStack> drops = Block.getDrops(targetState, (ServerLevel) level, pos, level.getBlockEntity(pos), livingEntity, hammerStack);
-                    drops.forEach(e -> Block.popResourceFromFace(level, pos, ((BlockHitResult) pick).getDirection(), e));
+                    drops.forEach(e -> Block.popResourceFromFace(level, pos, pick.getDirection(), e));
                 }
             }
 
