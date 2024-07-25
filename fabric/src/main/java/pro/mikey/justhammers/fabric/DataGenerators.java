@@ -191,7 +191,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
 
         @Override
         public void generateItemModels(ItemModelGenerators itemModelGenerator) {
-            HammerItems.HAMMERS.forEach(e -> handHeldItem(itemModelGenerator, e));
+            HammerItems.HAMMERS.forEach(e -> handHeldItemHandheld(itemModelGenerator, e));
 
             handHeldItem(itemModelGenerator, HammerItems.IMPACT_CORE);
             handHeldItem(itemModelGenerator, HammerItems.REINFORCED_CORE);
@@ -199,10 +199,12 @@ public class DataGenerators implements DataGeneratorEntrypoint {
             handHeldItem(itemModelGenerator, HammerItems.DESTRUCTOR_CORE);
         }
 
+        private void handHeldItemHandheld(ItemModelGenerators itemModelGenerator, RegistrySupplier<Item> item) {
+            itemModelGenerator.generateFlatItem(item.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        }
+
         private void handHeldItem(ItemModelGenerators itemModelGenerator, RegistrySupplier<Item> item) {
             itemModelGenerator.generateFlatItem(item.get(), ModelTemplates.FLAT_ITEM);
-//            itemModelGenerator.
-//            singleTexture(path, mcLoc("item/handheld"), "layer0", modLoc("item/" + path));
         }
     }
 }
