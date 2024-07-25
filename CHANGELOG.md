@@ -5,6 +5,7 @@
 ### Added
 
 - Added a config option to disable the hammers durability from being shown in the tooltip [#22](https://github.com/nanite/JustHammers/issues/22)
+- Added a custom recipe type to allow for repairing the item in your crafting grid with the same material as the hammer
 
 ### Changed
 

@@ -20,6 +20,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import pro.mikey.justhammers.HammerItems;
 import pro.mikey.justhammers.HammerTags;
+import pro.mikey.justhammers.recipe.RepairRecipe;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -63,6 +64,9 @@ public class DataGenerators implements DataGeneratorEntrypoint {
 
         @Override
         public void buildRecipes(RecipeOutput consumer) {
+            SpecialRecipeBuilder.special(RepairRecipe::new)
+                    .save(consumer, "justhammers:repair");
+
             standardHammer(HammerItems.STONE_HAMMER, Items.STONE).save(consumer);
             standardHammer(HammerItems.IRON_HAMMER, Items.IRON_INGOT).save(consumer);
             standardHammer(HammerItems.GOLD_HAMMER, Items.GOLD_INGOT).save(consumer);
