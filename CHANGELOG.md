@@ -1,5 +1,11 @@
 # Just Hammers Changelog
 
+## [21.0.2]
+
+### Fixed
+
+- Hammer cores acting as hammers [#37](https://github.com/nanite/JustHammers/issues/37)
+
 ## [21.0.1]
 
 ### Fixed

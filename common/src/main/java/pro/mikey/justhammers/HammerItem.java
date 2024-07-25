@@ -36,7 +36,7 @@ public class HammerItem extends PickaxeItem {
 
     public HammerItem(Tier tier, int radius, int depth, int level) {
         super(new WrappedTier(tier, computeDurability(tier, level)),
-                HammerItems.DEFAULT_PROPERTIES
+                new Item.Properties().arch$tab(Hammers.TAB)
                         .durability(computeDurability(tier, level))
                         .attributes(PickaxeItem.createAttributes(tier, 1, -2.8f)));
 
