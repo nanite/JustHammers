@@ -12,6 +12,7 @@
 - Hammers would apply one extra damage on break due to the hammer trying to break the same block twice [#36](https://github.com/nanite/JustHammers/issues/36)
 - Hammers will no longer void blocks like dirt and sand but will break slower like in vanilla [#35](https://github.com/nanite/JustHammers/issues/35)
 - Hammers now show in the hand correctly instead of looking like a normal item [#30](https://github.com/nanite/JustHammers/issues/30)
+- Hammers will no longer crash the client if durability goes negative (somehow) [#34](https://github.com/nanite/JustHammers/issues/34)
 
 ## [21.0.1]
 
