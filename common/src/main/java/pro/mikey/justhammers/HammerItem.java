@@ -147,6 +147,11 @@ public class HammerItem extends PickaxeItem {
         while (iterator.hasNext()) {
             var pos = iterator.next();
 
+            // Don't mess with the originally broken block
+            if (pick.getBlockPos().equals(pos)) {
+                continue;
+            }
+
             // Prevent the hammer from breaking if the damage is too high
             if (!player.isCreative() && (hammerStack.getDamageValue() + (damage + 1)) >= hammerStack.getMaxDamage() - 1) {
                 break;

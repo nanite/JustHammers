@@ -5,6 +5,8 @@
 ### Fixed
 
 - Hammer cores acting as hammers [#37](https://github.com/nanite/JustHammers/issues/37)
+- Hammers would apply one extra damage on break due to the hammer trying to break the same block twice [#36](https://github.com/nanite/JustHammers/issues/36)
+- 
 
 ## [21.0.1]
 
