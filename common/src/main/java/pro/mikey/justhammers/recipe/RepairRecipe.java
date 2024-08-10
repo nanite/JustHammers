@@ -3,7 +3,10 @@ package pro.mikey.justhammers.recipe;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
@@ -39,14 +42,20 @@ public class RepairRecipe extends CustomRecipe {
         // How damaged is the hammer?
         var currentDamage = hammer.getDamageValue();
 
+        // Repair is calculated as a percentage of the max damage. If the max damage is 1000 and the repair percentage is 33.33%, then 333 durability is restored.
         // How many items would it take to get the current damage to 0?
-        var neededRepairItems = (int) Math.ceil((double) currentDamage / SimpleJsonConfig.INSTANCE.durabilityPerRepairItem.get().getAsInt());
+        boolean isNetheriteHammer = ((DiggerItem) hammer.getItem()).getTier().getRepairIngredient().test(new ItemStack(Items.NETHERITE_INGOT));
+        var repairPercentage = isNetheriteHammer ? SimpleJsonConfig.INSTANCE.durabilityRepairPercentageNetherite.get().getAsDouble() : SimpleJsonConfig.INSTANCE.durabilityRepairPercentage.get().getAsDouble();
+        var repairAmount = Math.floor((hammer.getMaxDamage() / 100D) * repairPercentage);
+
+        // Figure out how many items are needed to repair the hammer
+        var neededRepairItems = Math.max(1, (int) Math.floor((double) currentDamage / repairAmount));
 
         // Clamp the amount of items to the amount of items in the stack
         neededRepairItems = Math.min(neededRepairItems, repairItem.getCount());
 
         // Remove that amount of items from the stack used to repair the hammer
-        repairItem.shrink(neededRepairItems);
+        repairItem.shrink(neededRepairItems - 1);
 
         // Return the remaining items
         return remainingItems;
@@ -70,12 +79,24 @@ public class RepairRecipe extends CustomRecipe {
         var repairItem = repairTargets.getSecond();
 
         var repairedHammer = hammer.copy();
-        var repairAmount = SimpleJsonConfig.INSTANCE.durabilityPerRepairItem.get().getAsInt() * repairItem.getCount();
+        // Repair is calculated as a percentage of the max damage. This assumes that the max damage is 100% meaning that if the repair percentage is 33.33%, then 33.33% of the max damage is restored.
+        boolean isNetheriteHammer = ((DiggerItem) hammer.getItem()).getTier().getRepairIngredient().test(new ItemStack(Items.NETHERITE_INGOT));
+        var percentage = isNetheriteHammer ? SimpleJsonConfig.INSTANCE.durabilityRepairPercentageNetherite.get().getAsDouble() : SimpleJsonConfig.INSTANCE.durabilityRepairPercentage.get().getAsDouble();
+        var repairAmount = Math.floor((hammer.getMaxDamage() / 100D) * percentage);
 
         var currentDamage = hammer.getDamageValue();
 
-        var newDamage = Math.min(Math.max(0, currentDamage - repairAmount), hammer.getMaxDamage());
-        repairedHammer.setDamageValue(newDamage);
+        // How many items would it take to get the current damage to 0 and how many items do we have access to
+        var neededRepairItems = Math.max(1, (int) Math.floor((double) currentDamage / repairAmount));
+        var availableRepairItems = repairItem.getCount();
+
+        // Clamp the amount of items to the amount of items in the stack
+        neededRepairItems = Math.min(neededRepairItems, availableRepairItems);
+
+        // Take the needed repair items from the stack and times it by the repair amount to get the total repair amount
+        var repairAmountTotal = neededRepairItems * repairAmount;
+        var newDamage = Math.max(0, currentDamage - repairAmountTotal);
+        repairedHammer.setDamageValue((int) newDamage);
 
         return repairedHammer;
     }
@@ -92,11 +113,6 @@ public class RepairRecipe extends CustomRecipe {
 
     @Nullable
     private Pair<ItemStack, ItemStack> getRepairTargets(CraftingInput recipeInput) {
-        // Ensure we have more than 2 slots
-        if (recipeInput.width() < 2 || recipeInput.height() < 2) {
-            return null;
-        }
-
         if (recipeInput.ingredientCount() != 2) {
             return null;
         }
@@ -114,6 +130,10 @@ public class RepairRecipe extends CustomRecipe {
         }
 
         if (hammer == null) {
+            return null;
+        }
+
+        if (hammer.getDamageValue() == 0) {
             return null;
         }
 

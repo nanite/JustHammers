@@ -1,4 +1,4 @@
-// 1.21	2024-07-25T14:02:24.106241	Just Hammers/Recipes
+// 1.21	2024-08-10T18:18:49.132614	Just Hammers/Recipes
 c873416043e364ce7d1f246e760cd82ff88084d0 data/justhammers/advancement/recipes/tools/reinforced_impact_core.json
 770db99b6530b132e3aa46a37023e850c77719cc data/justhammers/recipe/reinforced_core.json
 7c135c16b91a1f0c859766d4853e06e99a7af507 data/justhammers/recipe/iron_hammer.json
@@ -6,8 +6,8 @@ c873416043e364ce7d1f246e760cd82ff88084d0 data/justhammers/advancement/recipes/to
 1f90d76abd8134ce788ab305442a68bd78eab719 data/justhammers/advancement/recipes/tools/diamond_destructor_hammer.json
 6aa2a5f1d82ca751b336cc1b6daf2046b6528f83 data/justhammers/advancement/recipes/tools/netherite_reinforced_impact_hammer.json
 7238b4229a4052e341be4149041b9258d6c05df8 data/justhammers/advancement/recipes/tools/iron_destructor_hammer.json
-3955773485fb2702affa034441c965bbd9cf64d2 data/justhammers/advancement/recipes/tools/netherite_hammer.json
 07816b20c47189e8368a59d9038fdc1ee9abc970 data/justhammers/advancement/recipes/tools/stone_hammer.json
+3955773485fb2702affa034441c965bbd9cf64d2 data/justhammers/advancement/recipes/tools/netherite_hammer.json
 4d5c47668ec41b1dbc3ad7dcce3c8b8c34165bdd data/justhammers/advancement/recipes/tools/gold_impact_hammer.json
 dd0ba4267b623d288a79e46e67862dd736e730ef data/justhammers/recipe/stone_destructor_hammer.json
 cca5c643dde2c7b267ad68f50057987058bd6211 data/justhammers/advancement/recipes/tools/stone_reinforced_hammer.json
@@ -55,6 +55,6 @@ bd3f7a17e17393374a2a91c25f6077ca60c9a657 data/justhammers/recipe/diamond_hammer.
 65db0e9c8365d6bb1d6c92a4f2613faae727dfbd data/justhammers/recipe/gold_reinforced_impact_hammer.json
 dbeb2ee1b90b47e9a57b8c29d2912d3cf827a05f data/justhammers/advancement/recipes/tools/reinforced_core.json
 b649ca87f6eb0d8e6c451a85f1dfb028fedf6f93 data/justhammers/advancement/recipes/tools/netherite_reinforced_hammer.json
-ede677891c0725814d26598735db6f6460672aaf data/justhammers/advancement/recipes/tools/stone_reinforced_impact_hammer.json
 c56f61f15b1df8ad137b553b61e23374238531cc data/justhammers/advancement/recipes/tools/gold_destructor_hammer.json
+ede677891c0725814d26598735db6f6460672aaf data/justhammers/advancement/recipes/tools/stone_reinforced_impact_hammer.json
 fa9615ba639634649982afa022c056c9ce712c9f data/justhammers/recipe/netherite_impact_hammer.json

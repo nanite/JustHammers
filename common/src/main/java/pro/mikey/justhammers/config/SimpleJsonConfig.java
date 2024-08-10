@@ -34,10 +34,16 @@ public enum SimpleJsonConfig {
             "Set to true to disable the durability tooltip on hammers"
     );
 
-    public final CommentedEntry durabilityPerRepairItem = create(
-            "durabilityPerRepairItem",
-            new JsonPrimitive(400),
-            "The amount of durability restored per repair item"
+    public final CommentedEntry durabilityRepairPercentage = create(
+            "durabilityRepairPercentage",
+            new JsonPrimitive(33.33D),
+            "The percentage of durability restored per repair item"
+    );
+
+    public final CommentedEntry durabilityRepairPercentageNetherite = create(
+            "durabilityRepairPercentageNetherite",
+            new JsonPrimitive(100D),
+            "The percentage of durability restored per repair item for netherite hammers"
     );
 
     private JsonObject config;
@@ -49,6 +55,7 @@ public enum SimpleJsonConfig {
 
         try {
             config = GSON.fromJson(Files.newBufferedReader(CONFIG_FILE), JsonObject.class);
+            addMissingEntries();
         } catch (Exception e) {
             LOGGER.error("Failed to load config", e);
             writeDefault();
@@ -64,6 +71,26 @@ public enum SimpleJsonConfig {
 
         try {
             Files.createDirectories(CONFIG_FILE.getParent());
+            Files.write(CONFIG_FILE, GSON.toJson(config).getBytes());
+        } catch (Exception e) {
+            LOGGER.error("Failed to write default config", e);
+        }
+    }
+
+    public void addMissingEntries() {
+        var changed = false;
+        for (CommentedEntry entry : entries) {
+            if (!config.has(entry.key)) {
+                entry.write(config);
+                changed = true;
+            }
+        }
+
+        if (!changed) {
+            return;
+        }
+
+        try {
             Files.write(CONFIG_FILE, GSON.toJson(config).getBytes());
         } catch (Exception e) {
             LOGGER.error("Failed to write default config", e);

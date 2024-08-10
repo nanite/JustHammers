@@ -54,6 +54,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
             tag(ItemTags.MINING_ENCHANTABLE).addAll(hammers);
 
             tag(HammerTags.HAMMERS).addAll(hammers);
+            tag(ItemTags.PICKAXES).addAll(hammers);
         }
     }
 

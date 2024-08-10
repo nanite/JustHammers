@@ -1,5 +1,18 @@
 # Just Hammers Changelog
 
+## [21.0.3]
+
+### Changed
+
+- Added the hammers to the #minecraft:pickaxes tag
+- Hammer repair durability is now handled by a percentage based system instead of a flat amount
+
+### Fixed 
+
+- Fixed a crashing issue on fabric due to poorly registered handlers [#38](https://github.com/nanite/JustHammers/issues/38)
+- The config system will now auto repair itself if it is missing a value
+- Actually call the blockdrops event on NeoForge
+
 ## [21.0.2]
 
 ### Added
