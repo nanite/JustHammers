@@ -1,7 +1,7 @@
 # Just Hammers Changelog
 
-## [2.0.3]
+## [2.0.4]
 
 ### Fixed
 
-- Assets being borked on forge
+- Crashing when hammers go into negative durability (Somehow)
