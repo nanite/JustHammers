@@ -45,7 +45,7 @@ public class HammerItem extends PickaxeItem {
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
         list.add(Component.translatable("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
 
-        int damage = itemStack.getDamageValue();
+        int damage = Math.max(0, itemStack.getDamageValue());
         int maxDamage = itemStack.getMaxDamage();
         int durabilityPercentage = (int) (((float) (maxDamage - damage) / (float) maxDamage) * 100);
 
@@ -59,7 +59,7 @@ public class HammerItem extends PickaxeItem {
             }
         }
 
-        int remaining = durabilityPercentage / 20;
+        int remaining = Math.max(0, durabilityPercentage / 20);
         var percentComponent = Component.literal(prettyDurability(damage) + "/" + prettyDurability(maxDamage) + " ")
                 .append(Component.literal("*".repeat(remaining)).withStyle(color))
                 .append(Component.literal("*".repeat(5 - remaining)).withStyle(ChatFormatting.GRAY))
