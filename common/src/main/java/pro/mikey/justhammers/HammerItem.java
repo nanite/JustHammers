@@ -23,7 +23,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import pro.mikey.justhammers.config.SimpleJsonConfig;
 
 import java.util.HashSet;
@@ -37,13 +36,8 @@ public class HammerItem extends PickaxeItem {
     private final int depth;
     private final int radius;
 
-    public HammerItem(Tier tier, int radius, int depth, int level) {
-        super(new WrappedTier(tier, computeDurability(tier, level)),
-                new Item.Properties().arch$tab(Hammers.TAB)
-                        .durability(computeDurability(tier, level))
-                        .attributes(PickaxeItem.createAttributes(tier, 1, -2.8f))
-                        .component(DataComponents.TOOL, tier.createToolProperties(BlockTags.MINEABLE_WITH_PICKAXE))
-        );
+    public HammerItem(Item.Properties rootProperties, ToolMaterial tier, int radius, int depth, int level) {
+        super(wrapMaterial(tier, computeDurability(tier, level)), 1, -2.8f, rootProperties);
 
         this.depth = depth;
         this.radius = radius;
@@ -100,13 +94,13 @@ public class HammerItem extends PickaxeItem {
         return output + units[unitIndex];
     }
 
-    private static int computeDurability(Tier tier, int level) {
+    private static int computeDurability(ToolMaterial tier, int level) {
         var baseModified = 0;
         if (level > 1) {
             // If we're above level 1 then the durability should be AT LEAST the durability of the netherite hammer
-            baseModified = Tiers.NETHERITE.getUses();
+            baseModified = ToolMaterial.NETHERITE.durability();
         }
-        return baseModified + ((int) (tier.getUses() * 2.5F) + (200 * level)) * level;
+        return baseModified + ((int) (tier.durability() * 2.5F) + (200 * level)) * level;
     }
 
     @Override
@@ -171,9 +165,13 @@ public class HammerItem extends PickaxeItem {
                 continue;
             }
 
-            // Skips any blocks that require a higher tier hammer
-            var incorrectBlocksForDrops = this.getTier().getIncorrectBlocksForDrops();
-            if (targetState.is(incorrectBlocksForDrops)) {
+            var toolComponent = hammerStack.get(DataComponents.TOOL);
+            if (toolComponent == null) {
+                continue;
+            }
+
+            var correctForDrops = toolComponent.isCorrectForDrops(targetState);
+            if (!correctForDrops || targetState.is(HammerTags.HAMMER_NO_SMASHY)) {
                 continue;
             }
 
@@ -238,38 +236,14 @@ public class HammerItem extends PickaxeItem {
         return radius;
     }
 
-    private record WrappedTier(
-            Tier tier,
-            int durability
-    ) implements Tier {
-        @Override
-        public int getUses() {
-            return durability;
-        }
-
-        @Override
-        public float getSpeed() {
-            return tier.getSpeed();
-        }
-
-        @Override
-        public float getAttackDamageBonus() {
-            return tier.getAttackDamageBonus();
-        }
-
-        @Override
-        public @NotNull TagKey<Block> getIncorrectBlocksForDrops() {
-            return tier.getIncorrectBlocksForDrops();
-        }
-
-        @Override
-        public int getEnchantmentValue() {
-            return tier.getEnchantmentValue();
-        }
-
-        @Override
-        public @NotNull Ingredient getRepairIngredient() {
-            return tier.getRepairIngredient();
-        }
+    private static ToolMaterial wrapMaterial(ToolMaterial toolMaterial, int durability) {
+        return new ToolMaterial(
+                toolMaterial.incorrectBlocksForDrops(),
+                durability,
+                toolMaterial.speed(),
+                toolMaterial.attackDamageBonus(),
+                toolMaterial.enchantmentValue(),
+                toolMaterial.repairItems()
+        );
     }
 }

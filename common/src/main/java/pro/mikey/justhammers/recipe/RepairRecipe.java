@@ -1,16 +1,19 @@
 package pro.mikey.justhammers.recipe;
 
 import com.mojang.datafixers.util.Pair;
+import dev.architectury.event.events.common.BlockEvent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.enchantment.Repairable;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +47,7 @@ public class RepairRecipe extends CustomRecipe {
 
         // Repair is calculated as a percentage of the max damage. If the max damage is 1000 and the repair percentage is 33.33%, then 333 durability is restored.
         // How many items would it take to get the current damage to 0?
-        boolean isNetheriteHammer = ((DiggerItem) hammer.getItem()).getTier().getRepairIngredient().test(new ItemStack(Items.NETHERITE_INGOT));
+        boolean isNetheriteHammer = isRepairItem(hammer, new ItemStack(Items.NETHERITE_INGOT));
         var repairPercentage = isNetheriteHammer ? SimpleJsonConfig.INSTANCE.durabilityRepairPercentageNetherite.get().getAsDouble() : SimpleJsonConfig.INSTANCE.durabilityRepairPercentage.get().getAsDouble();
         var repairAmount = Math.floor((hammer.getMaxDamage() / 100D) * repairPercentage);
 
@@ -80,7 +83,7 @@ public class RepairRecipe extends CustomRecipe {
 
         var repairedHammer = hammer.copy();
         // Repair is calculated as a percentage of the max damage. This assumes that the max damage is 100% meaning that if the repair percentage is 33.33%, then 33.33% of the max damage is restored.
-        boolean isNetheriteHammer = ((DiggerItem) hammer.getItem()).getTier().getRepairIngredient().test(new ItemStack(Items.NETHERITE_INGOT));
+        boolean isNetheriteHammer = isRepairItem(hammer, new ItemStack(Items.NETHERITE_INGOT));
         var percentage = isNetheriteHammer ? SimpleJsonConfig.INSTANCE.durabilityRepairPercentageNetherite.get().getAsDouble() : SimpleJsonConfig.INSTANCE.durabilityRepairPercentage.get().getAsDouble();
         var repairAmount = Math.floor((hammer.getMaxDamage() / 100D) * percentage);
 
@@ -102,12 +105,7 @@ public class RepairRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean canCraftInDimensions(int i, int j) {
-        return true;
-    }
-
-    @Override
-    public @NotNull RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<RepairRecipe> getSerializer() {
         return HammerRecipes.REPAIR_RECIPE_SERIALIZER.get();
     }
 
@@ -138,8 +136,8 @@ public class RepairRecipe extends CustomRecipe {
         }
 
         // Get the repair material
-        var repairItem = ((HammerItem) hammer.getItem()).getTier().getRepairIngredient();
-        if (repairItem.isEmpty()) {
+        Repairable repairable = hammer.get(DataComponents.REPAIRABLE);
+        if (repairable == null) {
             return null;
         }
 
@@ -153,7 +151,7 @@ public class RepairRecipe extends CustomRecipe {
                 continue;
             }
 
-            if (repairItem.test(stack)) {
+            if (repairable.isValidRepairItem(stack)) {
                 if (availableRepairItem != null) {
                     tooManyItems = true;
                     break;
@@ -168,5 +166,14 @@ public class RepairRecipe extends CustomRecipe {
         }
 
         return Pair.of(hammer, availableRepairItem);
+    }
+
+    private static boolean isRepairItem(ItemStack stack, ItemStack testStack) {
+        Repairable repairable = stack.get(DataComponents.REPAIRABLE);
+        if (repairable == null) {
+            return false;
+        }
+
+        return repairable.isValidRepairItem(testStack);
     }
 }

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "a": {
-      "item": "minecraft:stone"
-    },
-    "b": {
-      "item": "minecraft:stick"
-    },
-    "c": {
-      "item": "justhammers:impact_core"
-    }
+    "a": "minecraft:stone",
+    "b": "minecraft:stick",
+    "c": "justhammers:impact_core"
   },
   "pattern": [
     "aca",

@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -57,6 +58,8 @@ public class SelectionOutlineRender {
         }
 
         var item = heldItem.getItem() instanceof HammerItem ? heldItem.getItem() : offHandItem.getItem();
+        var itemStack = heldItem.getItem() instanceof HammerItem ? heldItem : offHandItem;
+
         var hammer = (HammerItem) item;
 
         // Get the block's position
@@ -65,8 +68,14 @@ public class SelectionOutlineRender {
 
         // Get the block at the pos
         var block = world.getBlockState(blockPos);
-        var incorrectFor = hammer.getTier().getIncorrectBlocksForDrops();
-        if (block.is(incorrectFor) || block.is(HammerTags.HAMMER_NO_SMASHY)) {
+
+        var toolComponent = itemStack.get(DataComponents.TOOL);
+        if (toolComponent == null) {
+            return;
+        }
+
+        var correctForDrops = toolComponent.isCorrectForDrops(block);
+        if (!correctForDrops || block.is(HammerTags.HAMMER_NO_SMASHY)) {
             return;
         }
 
@@ -96,14 +105,14 @@ public class SelectionOutlineRender {
             poseStack.pushPose();
             // Shift the pose stack to the block's position
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-            LevelRenderer.renderShape(
+            ShapeRenderer.renderShape(
                     poseStack,
                     consumers.getBuffer(RenderType.lines()),
                     renderShape,
                     // Location
                     0, 0, 0,
                     // Color
-                    0.0F, 0.0F, 0.0F, 0.35F);
+                    0x59000000);
             poseStack.popPose();
         }
 

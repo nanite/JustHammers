@@ -64,78 +64,91 @@ public class DataGenerators implements DataGeneratorEntrypoint {
         }
 
         @Override
-        public void buildRecipes(RecipeOutput consumer) {
-            SpecialRecipeBuilder.special(RepairRecipe::new)
-                    .save(consumer, "justhammers:repair");
-
-            standardHammer(HammerItems.STONE_HAMMER, Items.STONE).save(consumer);
-            standardHammer(HammerItems.IRON_HAMMER, Items.IRON_INGOT).save(consumer);
-            standardHammer(HammerItems.GOLD_HAMMER, Items.GOLD_INGOT).save(consumer);
-            standardHammer(HammerItems.DIAMOND_HAMMER, Items.DIAMOND).save(consumer);
-            standardHammer(HammerItems.NETHERITE_HAMMER, Items.NETHERITE_INGOT).save(consumer);
-
-            coreHammer(HammerItems.STONE_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.STONE).save(consumer);
-            coreHammer(HammerItems.IRON_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.IRON_BLOCK).save(consumer);
-            coreHammer(HammerItems.GOLD_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.GOLD_BLOCK).save(consumer);
-            coreHammer(HammerItems.DIAMOND_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.DIAMOND_BLOCK).save(consumer);
-            coreHammer(HammerItems.NETHERITE_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.NETHERITE_BLOCK).save(consumer);
-
-            coreHammer(HammerItems.STONE_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.STONE).save(consumer);
-            coreHammer(HammerItems.IRON_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.IRON_BLOCK).save(consumer);
-            coreHammer(HammerItems.GOLD_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.GOLD_BLOCK).save(consumer);
-            coreHammer(HammerItems.DIAMOND_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.DIAMOND_BLOCK).save(consumer);
-            coreHammer(HammerItems.NETHERITE_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.NETHERITE_BLOCK).save(consumer);
-
-            coreHammer(HammerItems.STONE_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.STONE).save(consumer);
-            coreHammer(HammerItems.IRON_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.IRON_BLOCK).save(consumer);
-            coreHammer(HammerItems.GOLD_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.GOLD_BLOCK).save(consumer);
-            coreHammer(HammerItems.DIAMOND_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.DIAMOND_BLOCK).save(consumer);
-            coreHammer(HammerItems.NETHERITE_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.NETHERITE_BLOCK).save(consumer);
-
-            coreHammer(HammerItems.STONE_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.STONE).save(consumer);
-            coreHammer(HammerItems.IRON_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.IRON_BLOCK).save(consumer);
-            coreHammer(HammerItems.GOLD_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.GOLD_BLOCK).save(consumer);
-            coreHammer(HammerItems.DIAMOND_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.DIAMOND_BLOCK).save(consumer);
-            coreHammer(HammerItems.NETHERITE_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.NETHERITE_BLOCK).save(consumer);
-
-            // These kinda suck
-            core(HammerItems.IMPACT_CORE, Items.REDSTONE, HammerItems.NETHERITE_HAMMER.get(), Items.IRON_BLOCK, Items.GOLD_BLOCK).save(consumer);
-            core(HammerItems.REINFORCED_CORE, Items.REDSTONE_BLOCK, HammerItems.IMPACT_CORE.get(), Items.GOLD_BLOCK, Items.GOLD_BLOCK).save(consumer);
-            core(HammerItems.REINFORCED_IMPACT_CORE, Items.REDSTONE_BLOCK, HammerItems.REINFORCED_CORE.get(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK).save(consumer);
-            core(HammerItems.DESTRUCTOR_CORE, Items.REDSTONE_BLOCK, HammerItems.REINFORCED_IMPACT_CORE.get(), Items.DIAMOND_BLOCK, Items.DIAMOND_BLOCK).save(consumer);
+        public String getName() {
+            return "Just Hammer Recipes";
         }
 
-        private RecipeBuilder standardHammer(Supplier<Item> hammer, ItemLike material) {
-            return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, hammer.get())
-                    .define('a', material)
-                    .define('b', Items.STICK)
-                    .pattern("aba")
-                    .pattern(" ba")
-                    .pattern(" b ")
-                    .unlockedBy("has_material", has(material));
-        }
+        @Override
+        protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+            return new RecipeProvider(provider, recipeOutput) {
+                @Override
+                public void buildRecipes() {
+                    SpecialRecipeBuilder.special(RepairRecipe::new)
+                            .save(this.output, "justhammers:repair");
 
-        private RecipeBuilder coreHammer(Supplier<Item> hammer, Supplier<Item> core, ItemLike material) {
-            return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, hammer.get())
-                    .define('a', material)
-                    .define('b', Items.STICK)
-                    .define('c', core.get())
-                    .pattern("aca")
-                    .pattern(" ba")
-                    .pattern(" b ")
-                    .unlockedBy("has_material", has(material));
-        }
+                    standardHammer(HammerItems.STONE_HAMMER, Items.STONE);
+                    standardHammer(HammerItems.IRON_HAMMER, Items.IRON_INGOT);
+                    standardHammer(HammerItems.GOLD_HAMMER, Items.GOLD_INGOT);
+                    standardHammer(HammerItems.DIAMOND_HAMMER, Items.DIAMOND);
+                    standardHammer(HammerItems.NETHERITE_HAMMER, Items.NETHERITE_INGOT);
 
-        private RecipeBuilder core(Supplier<Item> result, Item outside, Item inside, Item left, Item right) {
-            return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result.get())
-                    .define('a', outside)
-                    .define('b', inside)
-                    .define('c', left)
-                    .define('d', right)
-                    .pattern("aaa")
-                    .pattern("cbd")
-                    .pattern("aaa")
-                    .unlockedBy("has_material", has(HammerItems.STONE_HAMMER.get()));
+                    coreHammer(HammerItems.STONE_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.STONE);
+                    coreHammer(HammerItems.IRON_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.IRON_BLOCK);
+                    coreHammer(HammerItems.GOLD_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.GOLD_BLOCK);
+                    coreHammer(HammerItems.DIAMOND_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.DIAMOND_BLOCK);
+                    coreHammer(HammerItems.NETHERITE_IMPACT_HAMMER, HammerItems.IMPACT_CORE, Items.NETHERITE_BLOCK);
+
+                    coreHammer(HammerItems.STONE_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.STONE);
+                    coreHammer(HammerItems.IRON_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.IRON_BLOCK);
+                    coreHammer(HammerItems.GOLD_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.GOLD_BLOCK);
+                    coreHammer(HammerItems.DIAMOND_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.DIAMOND_BLOCK);
+                    coreHammer(HammerItems.NETHERITE_FIVE_HAMMER, HammerItems.REINFORCED_CORE, Items.NETHERITE_BLOCK);
+
+                    coreHammer(HammerItems.STONE_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.STONE);
+                    coreHammer(HammerItems.IRON_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.IRON_BLOCK);
+                    coreHammer(HammerItems.GOLD_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.GOLD_BLOCK);
+                    coreHammer(HammerItems.DIAMOND_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.DIAMOND_BLOCK);
+                    coreHammer(HammerItems.NETHERITE_FIVE_IMPACT_HAMMER, HammerItems.REINFORCED_IMPACT_CORE, Items.NETHERITE_BLOCK);
+
+                    coreHammer(HammerItems.STONE_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.STONE);
+                    coreHammer(HammerItems.IRON_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.IRON_BLOCK);
+                    coreHammer(HammerItems.GOLD_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.GOLD_BLOCK);
+                    coreHammer(HammerItems.DIAMOND_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.DIAMOND_BLOCK);
+                    coreHammer(HammerItems.NETHERITE_FIVE_DESTROY_HAMMER, HammerItems.DESTRUCTOR_CORE, Items.NETHERITE_BLOCK);
+
+                    // These kinda suck
+                    core(HammerItems.IMPACT_CORE, Items.REDSTONE, HammerItems.NETHERITE_HAMMER.get(), Items.IRON_BLOCK, Items.GOLD_BLOCK);
+                    core(HammerItems.REINFORCED_CORE, Items.REDSTONE_BLOCK, HammerItems.IMPACT_CORE.get(), Items.GOLD_BLOCK, Items.GOLD_BLOCK);
+                    core(HammerItems.REINFORCED_IMPACT_CORE, Items.REDSTONE_BLOCK, HammerItems.REINFORCED_CORE.get(), Items.DIAMOND_BLOCK, Items.GOLD_BLOCK);
+                    core(HammerItems.DESTRUCTOR_CORE, Items.REDSTONE_BLOCK, HammerItems.REINFORCED_IMPACT_CORE.get(), Items.DIAMOND_BLOCK, Items.DIAMOND_BLOCK);
+                }
+
+                private void standardHammer(Supplier<Item> hammer, ItemLike material) {
+                    this.shaped(RecipeCategory.TOOLS, hammer.get())
+                            .define('a', material)
+                            .define('b', Items.STICK)
+                            .pattern("aba")
+                            .pattern(" ba")
+                            .pattern(" b ")
+                            .unlockedBy("has_material", has(material))
+                            .save(this.output);
+                }
+
+                private void coreHammer(Supplier<Item> hammer, Supplier<Item> core, ItemLike material) {
+                    this.shaped(RecipeCategory.TOOLS, hammer.get())
+                            .define('a', material)
+                            .define('b', Items.STICK)
+                            .define('c', core.get())
+                            .pattern("aca")
+                            .pattern(" ba")
+                            .pattern(" b ")
+                            .unlockedBy("has_material", has(material))
+                            .save(this.output);
+                }
+
+                private void core(Supplier<Item> result, Item outside, Item inside, Item left, Item right) {
+                    this.shaped(RecipeCategory.TOOLS, result.get())
+                            .define('a', outside)
+                            .define('b', inside)
+                            .define('c', left)
+                            .define('d', right)
+                            .pattern("aaa")
+                            .pattern("cbd")
+                            .pattern("aaa")
+                            .unlockedBy("has_material", has(HammerItems.STONE_HAMMER.get()))
+                            .save(this.output);
+                }
+            };
         }
     }
 
