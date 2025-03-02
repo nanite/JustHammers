@@ -46,6 +46,12 @@ public enum SimpleJsonConfig {
             "The percentage of durability restored per repair item for netherite hammers"
     );
 
+    public final CommentedEntry breakableHammer = create(
+            "breakableHammer",
+            new JsonPrimitive(true),
+            "Set to true to allow hammers to break at 0 durability"
+    );
+
     private JsonObject config;
 
     public void load() {

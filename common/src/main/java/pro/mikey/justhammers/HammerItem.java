@@ -103,9 +103,20 @@ public class HammerItem extends PickaxeItem {
         return baseModified + ((int) (tier.durability() * 2.5F) + (200 * level)) * level;
     }
 
+    private boolean isHammerBroken(ItemStack itemStack) {
+        return isHammerBroken(itemStack, 0);
+    }
+
+    private boolean isHammerBroken(ItemStack itemStack, int offset) {
+        var isBreakable = SimpleJsonConfig.INSTANCE.breakableHammer.get().getAsBoolean();
+        var durabilityOffset = isBreakable ? 0 : -1;
+        var maxDamage = itemStack.getMaxDamage() + durabilityOffset;
+        return itemStack.getDamageValue() + offset >= maxDamage;
+    }
+
     @Override
     public float getDestroySpeed(ItemStack itemStack, BlockState blockState) {
-        if (itemStack.getMaxDamage() - itemStack.getDamageValue() <= 1) {
+        if (isHammerBroken(itemStack)) {
             return -1f;
         }
 
@@ -156,7 +167,7 @@ public class HammerItem extends PickaxeItem {
             }
 
             // Prevent the hammer from breaking if the damage is too high
-            if (!player.isCreative() && (hammerStack.getDamageValue() + (damage + 1)) >= hammerStack.getMaxDamage() - 1) {
+            if (!player.isCreative() && isHammerBroken(hammerStack, damage + 1)) {
                 break;
             }
 
