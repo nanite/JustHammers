@@ -21,5 +21,6 @@ public class Hammers {
         CREATIVE_TABS.register();
         HammerItems.ITEMS.register();
         HammerItems.init();
+        Config.INSTANCE.load();
     }
 }
