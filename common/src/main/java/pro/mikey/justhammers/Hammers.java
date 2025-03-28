@@ -14,7 +14,6 @@ public class Hammers {
     public static void init() {
         HammerItems.ITEMS.register();
         HammerItems.init();
-
-        
+        Config.INSTANCE.load();
     }
 }
