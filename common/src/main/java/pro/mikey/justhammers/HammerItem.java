@@ -6,25 +6,16 @@ import dev.architectury.utils.value.IntValue;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -34,7 +25,6 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.NotNull;
 import pro.mikey.justhammers.config.SimpleJsonConfig;
 import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
@@ -48,24 +38,19 @@ public class HammerItem extends PickaxeItem {
     private final int depth;
     private final int radius;
 
-    public HammerItem(Tier tier, int radius, int depth, int level) {
-        super(new WrappedTier(tier, computeDurability(tier, level)), computeProperties(tier, level));
+    public HammerItem(Item.Properties rootProperties, ToolMaterial tier, int radius, int depth, int level) {
+        super(wrapMaterial(tier, computeDurability(tier, level)), 1, -2.8f, computeProperties(tier, rootProperties));
 
         this.depth = depth;
         this.radius = radius;
     }
 
-    private static Item.Properties computeProperties(Tier tier, int level) {
-        Properties itemProperties = new Properties().arch$tab(Hammers.TAB)
-                .durability(computeDurability(tier, level))
-                .attributes(PickaxeItem.createAttributes(tier, 1, -2.8f))
-                .component(DataComponents.TOOL, tier.createToolProperties(BlockTags.MINEABLE_WITH_PICKAXE));
-
-        if (tier == Tiers.NETHERITE) {
-            itemProperties.fireResistant();
+    private static Item.Properties computeProperties(ToolMaterial tier, Item.Properties properties) {
+        if (tier == ToolMaterial.NETHERITE) {
+            properties.fireResistant();
         }
 
-        return itemProperties;
+        return properties;
     }
 
     @Override
@@ -240,7 +225,7 @@ public class HammerItem extends PickaxeItem {
                         drops.forEach(e -> Block.popResourceFromFace(level, pos, pick.getDirection(), e));
                     }
 
-                    if (outputXpLevel != -1 && level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+                    if (outputXpLevel != -1 && ((ServerLevel) level).getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
                         ExperienceOrb.award((ServerLevel) level, Vec3.atCenterOf(blockPos), outputXpLevel);
                     }
                 }
