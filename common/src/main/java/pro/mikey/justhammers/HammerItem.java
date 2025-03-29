@@ -2,30 +2,41 @@ package pro.mikey.justhammers;
 
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.BlockEvent;
+import dev.architectury.utils.value.IntValue;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import pro.mikey.justhammers.config.SimpleJsonConfig;
-
+import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -38,15 +49,23 @@ public class HammerItem extends PickaxeItem {
     private final int radius;
 
     public HammerItem(Tier tier, int radius, int depth, int level) {
-        super(new WrappedTier(tier, computeDurability(tier, level)),
-                new Item.Properties().arch$tab(Hammers.TAB)
-                        .durability(computeDurability(tier, level))
-                        .attributes(PickaxeItem.createAttributes(tier, 1, -2.8f))
-                        .component(DataComponents.TOOL, tier.createToolProperties(BlockTags.MINEABLE_WITH_PICKAXE))
-        );
+        super(new WrappedTier(tier, computeDurability(tier, level)), computeProperties(tier, level));
 
         this.depth = depth;
         this.radius = radius;
+    }
+
+    private static Item.Properties computeProperties(Tier tier, int level) {
+        Properties itemProperties = new Properties().arch$tab(Hammers.TAB)
+                .durability(computeDurability(tier, level))
+                .attributes(PickaxeItem.createAttributes(tier, 1, -2.8f))
+                .component(DataComponents.TOOL, tier.createToolProperties(BlockTags.MINEABLE_WITH_PICKAXE));
+
+        if (tier == Tiers.NETHERITE) {
+            itemProperties.fireResistant();
+        }
+
+        return itemProperties;
     }
 
     @Override
@@ -111,6 +130,10 @@ public class HammerItem extends PickaxeItem {
 
     @Override
     public float getDestroySpeed(ItemStack itemStack, BlockState blockState) {
+        if (SimpleJsonConfig.INSTANCE.allowHammerBreaking.get().getAsBoolean()) {
+            return super.getDestroySpeed(itemStack, blockState);
+        }
+
         if (itemStack.getMaxDamage() - itemStack.getDamageValue() <= 1) {
             return -1f;
         }
@@ -162,7 +185,12 @@ public class HammerItem extends PickaxeItem {
             }
 
             // Prevent the hammer from breaking if the damage is too high
-            if (!player.isCreative() && (hammerStack.getDamageValue() + (damage + 1)) >= hammerStack.getMaxDamage() - 1) {
+            boolean isBroken = (hammerStack.getDamageValue() + (damage + 1)) >= hammerStack.getMaxDamage() - 1;
+            if (SimpleJsonConfig.INSTANCE.allowHammerBreaking.get().getAsBoolean()) {
+                isBroken = hammerStack.getDamageValue() + (damage + 1) >= hammerStack.getMaxDamage();
+            }
+
+            if (!player.isCreative() && isBroken) {
                 break;
             }
 
@@ -178,25 +206,48 @@ public class HammerItem extends PickaxeItem {
             }
 
             // Throw event out there and let mods block us breaking this block
-            EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(level, pos, targetState, (ServerPlayer) livingEntity, null);
+            final int[] xp = {HammersPlatform.getBlockXpAmount(pos, targetState, level, livingEntity, hammerStack)};
+            EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(level, pos, targetState, (ServerPlayer) livingEntity, xp[0] == -1 ? null : new IntValue() {
+                @Override
+                public void accept(int value) {
+                    xp[0] = value;
+                }
+
+                @Override
+                public int getAsInt() {
+                    return xp[0];
+                }
+            });
+
             if (eventResult.isFalse()) {
                 continue;
             }
 
-            removedPos.add(pos);
-            level.destroyBlock(pos, false, livingEntity);
+            final int outputXpLevel = xp[0];
+
             if (!player.isCreative()) {
                 boolean correctToolForDrops = player.hasCorrectToolForDrops(targetState);
                 if (correctToolForDrops) {
                     targetState.spawnAfterBreak((ServerLevel) level, pos, hammerStack, true);
                     List<ItemStack> drops = Block.getDrops(targetState, (ServerLevel) level, pos, level.getBlockEntity(pos), livingEntity, hammerStack);
-
                     List<ItemEntity> dropEntities = drops.stream().map(e -> new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), e)).toList();
                     var result = HammersPlatform.blockDropsEvent((ServerLevel) level, pos, targetState, level.getBlockEntity(pos), dropEntities, livingEntity, hammerStack);
                     if (!result) {
                         drops.forEach(e -> Block.popResourceFromFace(level, pos, pick.getDirection(), e));
                     }
+
+                    if (outputXpLevel != -1 && level.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+                        ExperienceOrb.award((ServerLevel) level, Vec3.atCenterOf(blockPos), outputXpLevel);
+                    }
                 }
+            }
+
+            removedPos.add(pos);
+            targetState.getBlock().destroy(level, pos, targetState);
+            BlockState newState = Blocks.AIR.defaultBlockState();
+            var setResult = level.setBlock(pos, newState, 3);
+            if (setResult) {
+                level.gameEvent(GameEvent.BLOCK_DESTROY, blockPos, GameEvent.Context.of(livingEntity, newState));
             }
 
             damage ++;
