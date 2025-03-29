@@ -1,5 +1,11 @@
 # Just Hammers Changelog
 
+## [21.5.0]
+
+### Changed
+
+- Updated to Minecraft 1.21.5
+
 ## [21.4.1]
 
 ### Added

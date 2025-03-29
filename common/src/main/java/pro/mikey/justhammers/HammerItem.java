@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -31,21 +32,24 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static pro.mikey.justhammers.HammerTags.HAMMER_NO_SMASHY;
 
-public class HammerItem extends PickaxeItem {
+public class HammerItem extends Item {
     private final int depth;
     private final int radius;
 
     public HammerItem(Item.Properties rootProperties, ToolMaterial tier, int radius, int depth, int level) {
-        super(wrapMaterial(tier, computeDurability(tier, level)), 1, -2.8f, computeProperties(tier, rootProperties));
+        super(computeProperties(tier, rootProperties, level));
 
         this.depth = depth;
         this.radius = radius;
     }
 
-    private static Item.Properties computeProperties(ToolMaterial tier, Item.Properties properties) {
+    private static Item.Properties computeProperties(ToolMaterial tier, Item.Properties properties, int level) {
+        properties.pickaxe(wrapMaterial(tier, computeDurability(tier, level)), 1.0F, -2.8F);
+
         if (tier == ToolMaterial.NETHERITE) {
             properties.fireResistant();
         }
@@ -54,8 +58,8 @@ public class HammerItem extends PickaxeItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
-        list.add(Component.translatable("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag tooltipFlag) {
+        consumer.accept(Component.translatable("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
 
         if (SimpleJsonConfig.INSTANCE.disabledDurabilityTooltip.get().getAsBoolean()) {
             return;
@@ -81,7 +85,7 @@ public class HammerItem extends PickaxeItem {
                 .append(Component.literal("*".repeat(5 - remaining)).withStyle(ChatFormatting.GRAY))
                 .append(Component.literal(" (" + durabilityPercentage + "%)").withStyle(ChatFormatting.GRAY));
 
-        list.add(percentComponent);
+        consumer.accept(percentComponent);
     }
 
     private static String prettyDurability(int durability) {
