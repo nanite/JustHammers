@@ -1,6 +1,7 @@
 plugins {
-    id "architectury-plugin" version "3.4.151"
-    id "dev.architectury.loom" version "1.4.373" apply false
+    id 'architectury-plugin' version '3.4-SNAPSHOT'
+    id 'dev.architectury.loom' version '1.10-SNAPSHOT' apply false
+    id 'com.gradleup.shadow' version '8.3.6' apply false
     id "me.modmuss50.mod-publish-plugin" version "0.4.5"
 }
 
@@ -70,12 +71,6 @@ publishMods {
         modLoaders.add("fabric")
     }
 
-    def forgeOptions = publishOptions {
-        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
-        displayName = "[FORGE][${minecraft_version}] ${project.name} ${mod_version}"
-        modLoaders.add("forge")
-    }
-
     def neoForge = publishOptions {
         file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
         displayName = "[NEOFORGE][${minecraft_version}] ${project.name} ${mod_version}"
@@ -104,13 +99,6 @@ publishMods {
         }
     }
 
-    curseforge("curseforgeForge") {
-        from(curseForgeOptions, forgeOptions)
-        requires {
-            slug = "architectury-api"
-        }
-    }
-
     curseforge("curseforgeNeoForge") {
         from(curseForgeOptions, neoForge)
         requires {
@@ -129,13 +117,6 @@ publishMods {
         }
     }
 
-    modrinth("modrinthForge") {
-        from(modrinthOptions, forgeOptions)
-        requires {
-            slug = "architectury-api"
-        }
-    }
-
     modrinth("modrinthNeoforge") {
         from(modrinthOptions, neoForge)
         requires {
@@ -144,8 +125,7 @@ publishMods {
     }
 
     github {
-        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
-        additionalFiles.from project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+        file = project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
         additionalFiles.from project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
 
         announcementTitle = "[${minecraft_version}] Just Hammers ${mod_version}"

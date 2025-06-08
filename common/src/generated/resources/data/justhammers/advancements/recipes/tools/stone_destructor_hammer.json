@@ -30,6 +30,5 @@
     "recipes": [
       "justhammers:stone_destructor_hammer"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

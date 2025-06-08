@@ -30,6 +30,5 @@
     "recipes": [
       "justhammers:destructor_core"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

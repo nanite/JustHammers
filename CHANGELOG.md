@@ -1,14 +1,12 @@
 # Just Hammers Changelog
 
-## [20.4.1]
-
-### Added
-
-- Added a config to disable the no-breaking checks. This means, when enabled, hammers can break in the players inventory when their damage is depleted.
-- Added a config option to disable the "fancy" durability in the tooltip as some other mods will already provide something similar.
+## [20.4.2]
 
 ### Fixed
 
-- XP not dropping for ores and other blocks that drop XP
-- Sound being played for all breaking blocks which caused sound engine issues
-- Make netherite hammers fire resistant
+- Crashing on NeoForge due to missing cross-platform method
+- Added missing tags for declaring the hammers as pickaxes
+
+### Changed
+
+- Removed Forge support, this mod is now NeoForge & Fabric only

@@ -1,0 +1,30 @@
+{
+  "replace": false,
+  "values": [
+    "justhammers:stone_hammer",
+    "justhammers:iron_hammer",
+    "justhammers:gold_hammer",
+    "justhammers:diamond_hammer",
+    "justhammers:netherite_hammer",
+    "justhammers:stone_impact_hammer",
+    "justhammers:iron_impact_hammer",
+    "justhammers:gold_impact_hammer",
+    "justhammers:diamond_impact_hammer",
+    "justhammers:netherite_impact_hammer",
+    "justhammers:stone_reinforced_hammer",
+    "justhammers:iron_reinforced_hammer",
+    "justhammers:gold_reinforced_hammer",
+    "justhammers:diamond_reinforced_hammer",
+    "justhammers:netherite_reinforced_hammer",
+    "justhammers:stone_reinforced_impact_hammer",
+    "justhammers:iron_reinforced_impact_hammer",
+    "justhammers:gold_reinforced_impact_hammer",
+    "justhammers:diamond_reinforced_impact_hammer",
+    "justhammers:netherite_reinforced_impact_hammer",
+    "justhammers:stone_destructor_hammer",
+    "justhammers:iron_destructor_hammer",
+    "justhammers:gold_destructor_hammer",
+    "justhammers:diamond_destructor_hammer",
+    "justhammers:netherite_destructor_hammer"
+  ]
+}

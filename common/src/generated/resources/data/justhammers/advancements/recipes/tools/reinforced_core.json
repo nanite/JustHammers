@@ -30,6 +30,5 @@
     "recipes": [
       "justhammers:reinforced_core"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -43,7 +43,7 @@ import static pro.mikey.justhammers.HammerTags.HAMMER_NO_SMASHY;
 public class HammerItem extends PickaxeItem {
     private final int depth;
     private final int radius;
-    private TagKey<Block> blocks;
+    private final TagKey<Block> blocks;
 
     public HammerItem(Tier tier, int radius, int depth, int level) {
         super(tier, 1, -2.8f,

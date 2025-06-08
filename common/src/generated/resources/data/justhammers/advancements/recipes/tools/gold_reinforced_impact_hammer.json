@@ -30,6 +30,5 @@
     "recipes": [
       "justhammers:gold_reinforced_impact_hammer"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -30,6 +30,5 @@
     "recipes": [
       "justhammers:iron_impact_hammer"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }
