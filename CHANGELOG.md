@@ -1,5 +1,18 @@
 # Just Hammers Changelog
 
+## [21.4.2]
+
+### Added
+
+- `zh-cn` translations thanks to [shenyx110](https://github.com/shenyx110) [#65](https://github.com/nanite/JustHammers/issues/65)
+- `ja_jp` translations thanks to [PExPE3](https://github.com/PExPE3) [#72](https://github.com/nanite/JustHammers/pull/72)
+
+### Fixed
+
+- Blocks not being counted towards the blocks mined statistic [#67](https://github.com/nanite/JustHammers/issues/67)
+- Animation resetting on fabric with mending causing the hammer to be delayed in breaking blocks [#64](https://github.com/nanite/JustHammers/issues/64)
+- Server issue with BreakBlockEvent [#75](https://github.com/nanite/JustHammers/issues/75)
+
 ## [21.4.1]
 
 ### Added
