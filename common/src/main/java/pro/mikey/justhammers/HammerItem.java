@@ -15,6 +15,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -255,6 +256,10 @@ public class HammerItem extends PickaxeItem {
             var setResult = level.setBlock(pos, newState, 3);
             if (setResult) {
                 level.gameEvent(GameEvent.BLOCK_DESTROY, blockPos, GameEvent.Context.of(livingEntity, newState));
+
+                // We definitely mined the block. Add the stat and cause food exhaustion
+                player.awardStat(Stats.BLOCK_MINED.get(targetState.getBlock()));
+                player.causeFoodExhaustion(0.005F);
             }
 
             damage ++;
