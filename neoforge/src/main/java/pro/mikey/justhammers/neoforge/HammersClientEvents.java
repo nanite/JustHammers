@@ -10,10 +10,7 @@ import pro.mikey.justhammers.client.SelectionOutlineRender;
 @EventBusSubscriber(value = Dist.CLIENT)
 public class HammersClientEvents {
     @SubscribeEvent
-    public static void onWorldRenderLast(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
-            return;
-        }
+    public static void onWorldRenderLast(RenderLevelStageEvent.AfterTranslucentBlocks event) {
 
         Minecraft instance = Minecraft.getInstance();
         SelectionOutlineRender.render(
@@ -23,7 +20,7 @@ public class HammersClientEvents {
                 event.getPoseStack(),
                 instance.renderBuffers().bufferSource(),
                 instance.gameRenderer,
-                event.getProjectionMatrix(),
+                event.getModelViewMatrix(),
                 instance.gameRenderer.lightTexture(),
                 instance.levelRenderer
          );

@@ -48,13 +48,13 @@ public class DataGenerators implements DataGeneratorEntrypoint {
             List<ResourceKey<Item>> hammers = HammerItems.HAMMERS.stream().map(e -> e.unwrapKey().get())
                     .toList();
 
-            tag(ItemTags.DURABILITY_ENCHANTABLE).addAll(hammers);
-            tag(ItemTags.MINING_LOOT_ENCHANTABLE).addAll(hammers);
-            tag(ItemTags.VANISHING_ENCHANTABLE).addAll(hammers);
-            tag(ItemTags.MINING_ENCHANTABLE).addAll(hammers);
+            this.builder(ItemTags.DURABILITY_ENCHANTABLE).addAll(hammers);
+            this.builder(ItemTags.MINING_LOOT_ENCHANTABLE).addAll(hammers);
+            this.builder(ItemTags.VANISHING_ENCHANTABLE).addAll(hammers);
+            this.builder(ItemTags.MINING_ENCHANTABLE).addAll(hammers);
 
-            tag(HammerTags.HAMMERS).addAll(hammers);
-            tag(ItemTags.PICKAXES).addAll(hammers);
+            this.builder(HammerTags.HAMMERS).addAll(hammers);
+            this.builder(ItemTags.PICKAXES).addAll(hammers);
         }
     }
 

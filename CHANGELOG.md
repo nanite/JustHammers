@@ -1,5 +1,11 @@
 # Just Hammers Changelog
 
+## [21.8.0]
+
+### Changed
+
+- Updated to Minecraft 1.21.8 (And `1.21.7`, `1.21.6`)
+
 ## [21.5.1]
 
 ### Added
