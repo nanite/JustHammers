@@ -289,6 +289,11 @@ public class HammerItem extends PickaxeItem {
         return radius;
     }
 
+    // Fabric only
+    boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {
+        return true;
+    }
+
     private record WrappedTier(
             Tier tier,
             int durability
