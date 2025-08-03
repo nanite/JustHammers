@@ -278,6 +278,11 @@ public class HammerItem extends PickaxeItem {
         return radius;
     }
 
+    // Fabric only
+    boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {
+        return true;
+    }
+
     private static ToolMaterial wrapMaterial(ToolMaterial toolMaterial, int durability) {
         return new ToolMaterial(
                 toolMaterial.incorrectBlocksForDrops(),
