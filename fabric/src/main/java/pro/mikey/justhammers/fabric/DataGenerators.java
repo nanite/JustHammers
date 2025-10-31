@@ -1,6 +1,5 @@
 package pro.mikey.justhammers.fabric;
 
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -12,19 +11,21 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import pro.mikey.justhammers.HammerItem;
 import pro.mikey.justhammers.HammerItems;
 import pro.mikey.justhammers.HammerTags;
 import pro.mikey.justhammers.recipe.RepairRecipe;
+import pro.mikey.justhammers.utils.DeferredResource;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 public class DataGenerators implements DataGeneratorEntrypoint {
 
@@ -45,7 +46,8 @@ public class DataGenerators implements DataGeneratorEntrypoint {
 
         @Override
         protected void addTags(HolderLookup.Provider wrapperLookup) {
-            List<ResourceKey<Item>> hammers = HammerItems.HAMMERS.stream().map(e -> e.unwrapKey().get())
+            List<ResourceKey<Item>> hammers = HammerItems.HAMMERS.stream()
+                    .map(e -> e.createKey(Registries.ITEM))
                     .toList();
 
             this.builder(ItemTags.DURABILITY_ENCHANTABLE).addAll(hammers);
@@ -113,18 +115,17 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                     core(HammerItems.DESTRUCTOR_CORE, Items.REDSTONE_BLOCK, HammerItems.REINFORCED_IMPACT_CORE.get(), Items.DIAMOND_BLOCK, Items.DIAMOND_BLOCK);
                 }
 
-                private void standardHammer(Supplier<Item> hammer, ItemLike material) {
+                private void standardHammer(DeferredResource<Item, HammerItem> hammer, ItemLike material) {
                     this.shaped(RecipeCategory.TOOLS, hammer.get())
                             .define('a', material)
                             .define('b', Items.STICK)
                             .pattern("aba")
                             .pattern(" ba")
                             .pattern(" b ")
-                            .unlockedBy("has_material", has(material))
-                            .save(this.output);
+                            .unlockedBy("has_material", has(material));
                 }
 
-                private void coreHammer(Supplier<Item> hammer, Supplier<Item> core, ItemLike material) {
+                private void coreHammer(DeferredResource<Item, HammerItem> hammer, DeferredResource<Item, Item> core, ItemLike material) {
                     this.shaped(RecipeCategory.TOOLS, hammer.get())
                             .define('a', material)
                             .define('b', Items.STICK)
@@ -132,11 +133,10 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                             .pattern("aca")
                             .pattern(" ba")
                             .pattern(" b ")
-                            .unlockedBy("has_material", has(material))
-                            .save(this.output);
+                            .unlockedBy("has_material", has(material));
                 }
 
-                private void core(Supplier<Item> result, Item outside, Item inside, Item left, Item right) {
+                private void core(DeferredResource<Item, Item> result, Item outside, Item inside, Item left, Item right) {
                     this.shaped(RecipeCategory.TOOLS, result.get())
                             .define('a', outside)
                             .define('b', inside)
@@ -145,8 +145,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                             .pattern("aaa")
                             .pattern("cbd")
                             .pattern("aaa")
-                            .unlockedBy("has_material", has(HammerItems.STONE_HAMMER.get()))
-                            .save(this.output);
+                            .unlockedBy("has_material", has(HammerItems.STONE_HAMMER.get()));
                 }
             };
         }
@@ -217,11 +216,11 @@ public class DataGenerators implements DataGeneratorEntrypoint {
             handHeldItem(itemModelGenerator, HammerItems.DESTRUCTOR_CORE);
         }
 
-        private void handHeldItemHandheld(ItemModelGenerators itemModelGenerator, RegistrySupplier<Item> item) {
+        private <T extends Item> void handHeldItemHandheld(ItemModelGenerators itemModelGenerator, DeferredResource<Item, T> item) {
             itemModelGenerator.generateFlatItem(item.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         }
 
-        private void handHeldItem(ItemModelGenerators itemModelGenerator, RegistrySupplier<Item> item) {
+        private void handHeldItem(ItemModelGenerators itemModelGenerator, DeferredResource<Item, Item> item) {
             itemModelGenerator.generateFlatItem(item.get(), ModelTemplates.FLAT_ITEM);
         }
     }

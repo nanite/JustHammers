@@ -8,7 +8,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -105,14 +104,8 @@ public class SelectionOutlineRender {
             poseStack.pushPose();
             // Shift the pose stack to the block's position
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-            ShapeRenderer.renderShape(
-                    poseStack,
-                    consumers.getBuffer(RenderType.lines()),
-                    renderShape,
-                    // Location
-                    0, 0, 0,
-                    // Color
-                    0x59000000);
+
+            ShapeRenderer.renderShape(poseStack, consumers.getBuffer(RenderType.lines()), renderShape, 0, 0, 0, 0x59000000);
             poseStack.popPose();
         }
 

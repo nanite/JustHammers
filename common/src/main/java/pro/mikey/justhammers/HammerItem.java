@@ -1,8 +1,5 @@
 package pro.mikey.justhammers;
 
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.BlockEvent;
-import dev.architectury.utils.value.IntValue;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -204,24 +201,11 @@ public class HammerItem extends Item {
             }
 
             // Throw event out there and let mods block us breaking this block
-            final int[] xp = {HammersPlatform.getBlockXpAmount(pos, targetState, level, livingEntity, hammerStack)};
-            EventResult eventResult = BlockEvent.BREAK.invoker().breakBlock(level, pos, targetState, (ServerPlayer) livingEntity, xp[0] == -1 ? null : new IntValue() {
-                @Override
-                public void accept(int value) {
-                    xp[0] = value;
-                }
-
-                @Override
-                public int getAsInt() {
-                    return xp[0];
-                }
-            });
-
-            if (eventResult.isFalse()) {
+            var xp = Hammers.XPLAT.getBlockXpAmount(pos, targetState, level, livingEntity, hammerStack);
+            var canContinue = Hammers.XPLAT.fireBlockBrokenEvent((ServerLevel) level, pos, targetState, player);
+            if (!canContinue) {
                 continue;
             }
-
-            final int outputXpLevel = xp[0];
 
             if (!player.isCreative()) {
                 boolean correctToolForDrops = player.hasCorrectToolForDrops(targetState);
@@ -230,15 +214,16 @@ public class HammerItem extends Item {
                     List<ItemStack> drops = Block.getDrops(targetState, (ServerLevel) level, pos, level.getBlockEntity(pos), livingEntity, hammerStack);
                     List<ItemEntity> dropEntities = drops.stream().map(e -> new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), e))
                             .collect(Collectors.toList()); // Ensure it's a mutable list
-                    var result = HammersPlatform.blockDropsEvent((ServerLevel) level, pos, targetState, level.getBlockEntity(pos), dropEntities, livingEntity, hammerStack);
+
+                    var result = Hammers.XPLAT.fireBlockDropsEvent((ServerLevel) level, pos, targetState, level.getBlockEntity(pos), dropEntities, livingEntity, hammerStack);
                     if (!result) {
                         dropEntities.stream()
                                 .map(ItemEntity::getItem)
                                 .forEach(e -> Block.popResourceFromFace(level, pos, pick.getDirection(), e));
                     }
 
-                    if (outputXpLevel != -1 && ((ServerLevel) level).getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
-                        ExperienceOrb.award((ServerLevel) level, Vec3.atCenterOf(blockPos), outputXpLevel);
+                    if (xp != -1 && ((ServerLevel) level).getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
+                        ExperienceOrb.award((ServerLevel) level, Vec3.atCenterOf(blockPos), xp);
                     }
                 }
             }

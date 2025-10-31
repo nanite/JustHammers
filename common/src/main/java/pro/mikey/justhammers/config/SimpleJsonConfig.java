@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pro.mikey.justhammers.HammersPlatform;
+import pro.mikey.justhammers.Hammers;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,7 +24,7 @@ public enum SimpleJsonConfig {
             .create();
 
     private static final String CONFIG_FILE_NAME = "justhammers.json";
-    private static final Path CONFIG_FILE = HammersPlatform.getConfigDirectory().resolve(CONFIG_FILE_NAME);
+    private static final Path CONFIG_FILE = Hammers.XPLAT.configDir().resolve(CONFIG_FILE_NAME);
 
     private List<CommentedEntry> entries = new LinkedList<>();
 

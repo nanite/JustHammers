@@ -3,7 +3,10 @@ plugins {
 }
 
 fabricApi {
-    configureDataGeneration {
+    configureDataGeneration() {
+        createSourceSet = false
+        addToResources = false
+        outputDirectory = project(":common").file("src/main/generated")
         client = true
     }
 }
@@ -20,7 +23,7 @@ loom {
     mods {
         "justhammers" {
             sourceSet sourceSets.main
-            sourceSet("main", project(":common"))
+            sourceSet("main", ":common")
         }
     }
 }
