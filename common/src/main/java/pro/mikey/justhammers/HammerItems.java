@@ -1,60 +1,65 @@
 package pro.mikey.justhammers;
 
-import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
+import pro.mikey.justhammers.utils.DeferredResource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public interface HammerItems {
-    Item.Properties DEFAULT_PROPERTIES = new Item.Properties().arch$tab(Hammers.TAB);
-    DeferredRegister<Item> ITEMS = DeferredRegister.create(Hammers.MOD_ID, Registries.ITEM);
+    Item.Properties DEFAULT_PROPERTIES = new Item.Properties();
 
-    List<RegistrySupplier<Item>> HAMMERS = new ArrayList<>();
+    List<DeferredResource<Item, ? extends Item>> ITEMS = new ArrayList<>();
+    List<DeferredResource<Item, HammerItem>> HAMMERS = new ArrayList<>();
 
-    RegistrySupplier<Item> STONE_HAMMER = register("stone", Tiers.STONE, SizeOption.THREE_THREE, 1);
-    RegistrySupplier<Item> IRON_HAMMER = register("iron", Tiers.IRON, SizeOption.THREE_THREE, 1);
-    RegistrySupplier<Item> GOLD_HAMMER = register("gold", Tiers.GOLD, SizeOption.THREE_THREE, 1);
-    RegistrySupplier<Item> DIAMOND_HAMMER = register("diamond", Tiers.DIAMOND, SizeOption.THREE_THREE, 1);
-    RegistrySupplier<Item> NETHERITE_HAMMER = register("netherite", Tiers.NETHERITE, SizeOption.THREE_THREE, 1);
+    DeferredResource<Item, HammerItem> STONE_HAMMER = registerHammer("stone", Tiers.STONE, SizeOption.THREE_THREE, 1);
+    DeferredResource<Item, HammerItem> IRON_HAMMER = registerHammer("iron", Tiers.IRON, SizeOption.THREE_THREE, 1);
+    DeferredResource<Item, HammerItem> GOLD_HAMMER = registerHammer("gold", Tiers.GOLD, SizeOption.THREE_THREE, 1);
+    DeferredResource<Item, HammerItem> DIAMOND_HAMMER = registerHammer("diamond", Tiers.DIAMOND, SizeOption.THREE_THREE, 1);
+    DeferredResource<Item, HammerItem> NETHERITE_HAMMER = registerHammer("netherite", Tiers.NETHERITE, SizeOption.THREE_THREE, 1);
 
-    RegistrySupplier<Item> STONE_IMPACT_HAMMER = register("stone_impact", Tiers.STONE, SizeOption.THREE_THREE_THREE, 2);
-    RegistrySupplier<Item> IRON_IMPACT_HAMMER = register("iron_impact", Tiers.IRON, SizeOption.THREE_THREE_THREE, 2);
-    RegistrySupplier<Item> GOLD_IMPACT_HAMMER = register("gold_impact", Tiers.GOLD, SizeOption.THREE_THREE_THREE, 2);
-    RegistrySupplier<Item> DIAMOND_IMPACT_HAMMER = register("diamond_impact", Tiers.DIAMOND, SizeOption.THREE_THREE_THREE, 2);
-    RegistrySupplier<Item> NETHERITE_IMPACT_HAMMER = register("netherite_impact", Tiers.NETHERITE, SizeOption.THREE_THREE_THREE, 2);
+    DeferredResource<Item, HammerItem> STONE_IMPACT_HAMMER = registerHammer("stone_impact", Tiers.STONE, SizeOption.THREE_THREE_THREE, 2);
+    DeferredResource<Item, HammerItem> IRON_IMPACT_HAMMER = registerHammer("iron_impact", Tiers.IRON, SizeOption.THREE_THREE_THREE, 2);
+    DeferredResource<Item, HammerItem> GOLD_IMPACT_HAMMER = registerHammer("gold_impact", Tiers.GOLD, SizeOption.THREE_THREE_THREE, 2);
+    DeferredResource<Item, HammerItem> DIAMOND_IMPACT_HAMMER = registerHammer("diamond_impact", Tiers.DIAMOND, SizeOption.THREE_THREE_THREE, 2);
+    DeferredResource<Item, HammerItem> NETHERITE_IMPACT_HAMMER = registerHammer("netherite_impact", Tiers.NETHERITE, SizeOption.THREE_THREE_THREE, 2);
 
-    RegistrySupplier<Item> STONE_FIVE_HAMMER = register("stone_reinforced", Tiers.STONE, SizeOption.FIVE_FIVE, 3);
-    RegistrySupplier<Item> IRON_FIVE_HAMMER = register("iron_reinforced", Tiers.IRON, SizeOption.FIVE_FIVE, 3);
-    RegistrySupplier<Item> GOLD_FIVE_HAMMER = register("gold_reinforced", Tiers.GOLD, SizeOption.FIVE_FIVE, 3);
-    RegistrySupplier<Item> DIAMOND_FIVE_HAMMER = register("diamond_reinforced", Tiers.DIAMOND, SizeOption.FIVE_FIVE, 3);
-    RegistrySupplier<Item> NETHERITE_FIVE_HAMMER = register("netherite_reinforced", Tiers.NETHERITE, SizeOption.FIVE_FIVE, 3);
+    DeferredResource<Item, HammerItem> STONE_FIVE_HAMMER = registerHammer("stone_reinforced", Tiers.STONE, SizeOption.FIVE_FIVE, 3);
+    DeferredResource<Item, HammerItem> IRON_FIVE_HAMMER = registerHammer("iron_reinforced", Tiers.IRON, SizeOption.FIVE_FIVE, 3);
+    DeferredResource<Item, HammerItem> GOLD_FIVE_HAMMER = registerHammer("gold_reinforced", Tiers.GOLD, SizeOption.FIVE_FIVE, 3);
+    DeferredResource<Item, HammerItem> DIAMOND_FIVE_HAMMER = registerHammer("diamond_reinforced", Tiers.DIAMOND, SizeOption.FIVE_FIVE, 3);
+    DeferredResource<Item, HammerItem> NETHERITE_FIVE_HAMMER = registerHammer("netherite_reinforced", Tiers.NETHERITE, SizeOption.FIVE_FIVE, 3);
 
-    RegistrySupplier<Item> STONE_FIVE_IMPACT_HAMMER = register("stone_reinforced_impact", Tiers.STONE, SizeOption.FIVE_FIVE_THREE, 4);
-    RegistrySupplier<Item> IRON_FIVE_IMPACT_HAMMER = register("iron_reinforced_impact", Tiers.IRON, SizeOption.FIVE_FIVE_THREE, 4);
-    RegistrySupplier<Item> GOLD_FIVE_IMPACT_HAMMER = register("gold_reinforced_impact", Tiers.GOLD, SizeOption.FIVE_FIVE_THREE, 4);
-    RegistrySupplier<Item> DIAMOND_FIVE_IMPACT_HAMMER = register("diamond_reinforced_impact", Tiers.DIAMOND, SizeOption.FIVE_FIVE_THREE, 4);
-    RegistrySupplier<Item> NETHERITE_FIVE_IMPACT_HAMMER = register("netherite_reinforced_impact", Tiers.NETHERITE, SizeOption.FIVE_FIVE_THREE, 4);
+    DeferredResource<Item, HammerItem> STONE_FIVE_IMPACT_HAMMER = registerHammer("stone_reinforced_impact", Tiers.STONE, SizeOption.FIVE_FIVE_THREE, 4);
+    DeferredResource<Item, HammerItem> IRON_FIVE_IMPACT_HAMMER = registerHammer("iron_reinforced_impact", Tiers.IRON, SizeOption.FIVE_FIVE_THREE, 4);
+    DeferredResource<Item, HammerItem> GOLD_FIVE_IMPACT_HAMMER = registerHammer("gold_reinforced_impact", Tiers.GOLD, SizeOption.FIVE_FIVE_THREE, 4);
+    DeferredResource<Item, HammerItem> DIAMOND_FIVE_IMPACT_HAMMER = registerHammer("diamond_reinforced_impact", Tiers.DIAMOND, SizeOption.FIVE_FIVE_THREE, 4);
+    DeferredResource<Item, HammerItem> NETHERITE_FIVE_IMPACT_HAMMER = registerHammer("netherite_reinforced_impact", Tiers.NETHERITE, SizeOption.FIVE_FIVE_THREE, 4);
 
-    RegistrySupplier<Item> STONE_FIVE_DESTROY_HAMMER = register("stone_destructor", Tiers.STONE, SizeOption.FIVE_FIVE_FIVE, 5);
-    RegistrySupplier<Item> IRON_FIVE_DESTROY_HAMMER = register("iron_destructor", Tiers.IRON, SizeOption.FIVE_FIVE_FIVE, 5);
-    RegistrySupplier<Item> GOLD_FIVE_DESTROY_HAMMER = register("gold_destructor", Tiers.GOLD, SizeOption.FIVE_FIVE_FIVE, 5);
-    RegistrySupplier<Item> DIAMOND_FIVE_DESTROY_HAMMER = register("diamond_destructor", Tiers.DIAMOND, SizeOption.FIVE_FIVE_FIVE, 5);
-    RegistrySupplier<Item> NETHERITE_FIVE_DESTROY_HAMMER = register("netherite_destructor", Tiers.NETHERITE, SizeOption.FIVE_FIVE_FIVE, 5);
+    DeferredResource<Item, HammerItem> STONE_FIVE_DESTROY_HAMMER = registerHammer("stone_destructor", Tiers.STONE, SizeOption.FIVE_FIVE_FIVE, 5);
+    DeferredResource<Item, HammerItem> IRON_FIVE_DESTROY_HAMMER = registerHammer("iron_destructor", Tiers.IRON, SizeOption.FIVE_FIVE_FIVE, 5);
+    DeferredResource<Item, HammerItem> GOLD_FIVE_DESTROY_HAMMER = registerHammer("gold_destructor", Tiers.GOLD, SizeOption.FIVE_FIVE_FIVE, 5);
+    DeferredResource<Item, HammerItem> DIAMOND_FIVE_DESTROY_HAMMER = registerHammer("diamond_destructor", Tiers.DIAMOND, SizeOption.FIVE_FIVE_FIVE, 5);
+    DeferredResource<Item, HammerItem> NETHERITE_FIVE_DESTROY_HAMMER = registerHammer("netherite_destructor", Tiers.NETHERITE, SizeOption.FIVE_FIVE_FIVE, 5);
 
-    RegistrySupplier<Item> IMPACT_CORE = ITEMS.register("impact_core", () -> new Item(DEFAULT_PROPERTIES));
-    RegistrySupplier<Item> REINFORCED_CORE = ITEMS.register("reinforced_core", () -> new Item(DEFAULT_PROPERTIES));
-    RegistrySupplier<Item> REINFORCED_IMPACT_CORE = ITEMS.register("reinforced_impact_core", () -> new Item(DEFAULT_PROPERTIES));
-    RegistrySupplier<Item> DESTRUCTOR_CORE = ITEMS.register("destructor_core", () -> new Item(DEFAULT_PROPERTIES));
+    DeferredResource<Item, Item> IMPACT_CORE = register("impact_core", () -> new Item(DEFAULT_PROPERTIES));
+    DeferredResource<Item, Item> REINFORCED_CORE = register("reinforced_core", () -> new Item(DEFAULT_PROPERTIES));
+    DeferredResource<Item, Item> REINFORCED_IMPACT_CORE = register("reinforced_impact_core", () -> new Item(DEFAULT_PROPERTIES));
+    DeferredResource<Item, Item> DESTRUCTOR_CORE = register("destructor_core", () -> new Item(DEFAULT_PROPERTIES));
 
-    private static RegistrySupplier<Item> register(String name, Tier tier, SizeOption size, int level) {
-        RegistrySupplier<Item> register = ITEMS.register(name + "_hammer", () -> new HammerItem(tier, size.radius, size.depth, level));
+    private static DeferredResource<Item, HammerItem> registerHammer(String name, Tier tier, SizeOption size, int level) {
+        DeferredResource<Item, HammerItem> register = register(name + "_hammer", () -> new HammerItem(tier, size.radius, size.depth, level));
         HAMMERS.add(register);
         return register;
+    }
+
+    private static <T extends Item> DeferredResource<Item, T> register(String name, Supplier<T> supplier) {
+        var entry = new DeferredResource<Item, T>(name, supplier);
+        ITEMS.add(entry);
+        return entry;
     }
 
     static void init() {}
@@ -74,4 +79,5 @@ public interface HammerItems {
             this.depth = depth;
         }
     }
+
 }

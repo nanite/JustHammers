@@ -2,27 +2,27 @@ plugins {
     id 'fabric-loom'
 }
 
+fabricApi {
+    configureDataGeneration() {
+        createSourceSet = false
+        addToResources = false
+        outputDirectory = project(":common").file("src/main/generated")
+    }
+}
+
 loom {
     accessWidenerPath = project(":common").file("src/main/resources/justhammers.accesswidener")
 
     runs {
-        client {
-            source = sourceSets.main
+        configureEach {
             ideConfigGenerated = true
-            client()
-        }
-
-        server {
-            source = sourceSets.main
-            ideConfigGenerated = true
-            server()
         }
     }
 
     mods {
         "justhammers" {
             sourceSet sourceSets.main
-            sourceSet("main", project(":common"))
+            sourceSet("main", ":common")
         }
     }
 }

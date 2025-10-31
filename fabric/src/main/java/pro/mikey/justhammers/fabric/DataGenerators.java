@@ -1,6 +1,5 @@
 package pro.mikey.justhammers.fabric;
 
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -9,6 +8,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.model.ModelTemplates;
@@ -18,13 +18,14 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import pro.mikey.justhammers.HammerItem;
 import pro.mikey.justhammers.HammerItems;
 import pro.mikey.justhammers.HammerTags;
 import pro.mikey.justhammers.recipe.RepairRecipe;
+import pro.mikey.justhammers.utils.DeferredResource;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 public class DataGenerators implements DataGeneratorEntrypoint {
 
@@ -45,7 +46,8 @@ public class DataGenerators implements DataGeneratorEntrypoint {
 
         @Override
         protected void addTags(HolderLookup.Provider wrapperLookup) {
-            List<ResourceKey<Item>> hammers = HammerItems.HAMMERS.stream().map(e -> e.unwrapKey().get())
+            List<ResourceKey<Item>> hammers = HammerItems.HAMMERS.stream()
+                    .map(e -> e.createKey(Registries.ITEM))
                     .toList();
 
             tag(ItemTags.DURABILITY_ENCHANTABLE).addAll(hammers);
@@ -105,7 +107,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
             core(HammerItems.DESTRUCTOR_CORE, Items.REDSTONE_BLOCK, HammerItems.REINFORCED_IMPACT_CORE.get(), Items.DIAMOND_BLOCK, Items.DIAMOND_BLOCK).save(consumer);
         }
 
-        private RecipeBuilder standardHammer(Supplier<Item> hammer, ItemLike material) {
+        private RecipeBuilder standardHammer(DeferredResource<Item, HammerItem> hammer, ItemLike material) {
             return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, hammer.get())
                     .define('a', material)
                     .define('b', Items.STICK)
@@ -115,7 +117,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                     .unlockedBy("has_material", has(material));
         }
 
-        private RecipeBuilder coreHammer(Supplier<Item> hammer, Supplier<Item> core, ItemLike material) {
+        private RecipeBuilder coreHammer(DeferredResource<Item, HammerItem> hammer, DeferredResource<Item, Item> core, ItemLike material) {
             return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, hammer.get())
                     .define('a', material)
                     .define('b', Items.STICK)
@@ -126,7 +128,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                     .unlockedBy("has_material", has(material));
         }
 
-        private RecipeBuilder core(Supplier<Item> result, Item outside, Item inside, Item left, Item right) {
+        private RecipeBuilder core(DeferredResource<Item, Item> result, Item outside, Item inside, Item left, Item right) {
             return ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, result.get())
                     .define('a', outside)
                     .define('b', inside)
@@ -204,11 +206,11 @@ public class DataGenerators implements DataGeneratorEntrypoint {
             handHeldItem(itemModelGenerator, HammerItems.DESTRUCTOR_CORE);
         }
 
-        private void handHeldItemHandheld(ItemModelGenerators itemModelGenerator, RegistrySupplier<Item> item) {
+        private <T extends Item> void handHeldItemHandheld(ItemModelGenerators itemModelGenerator, DeferredResource<Item, T> item) {
             itemModelGenerator.generateFlatItem(item.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         }
 
-        private void handHeldItem(ItemModelGenerators itemModelGenerator, RegistrySupplier<Item> item) {
+        private void handHeldItem(ItemModelGenerators itemModelGenerator, DeferredResource<Item, Item> item) {
             itemModelGenerator.generateFlatItem(item.get(), ModelTemplates.FLAT_ITEM);
         }
     }

@@ -28,13 +28,6 @@ versionRange = "[1.21,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.justhammers]]
-modId = "architectury"
-required = true
-versionRange = "[13.0.0,)"
-ordering = "AFTER"
-side = "BOTH"
-
 [[mixins]]
 config = "justhammers.mixins.json"
 

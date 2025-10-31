@@ -59,11 +59,19 @@ subprojects {
                 includeModule("org.lwjgl", "lwjgl-freetype")
             }
         }
+
+        maven {
+            url = uri("https://modmaven.dev/")
+            content {
+                includeGroup "mezz.jei"
+            }
+        }
     }
 
     if (project.name != "common") {
         dependencies {
             api project(":common")
+//            runtimeOnly "mezz.jei:jei-${minecraft_version}-${project.name}:${jei_version}"
         }
 
         jar {
