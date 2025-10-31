@@ -1,86 +1,54 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
-}
-
-architectury {
-    platformSetupLoomIde()
-    fabric()
+    id 'fabric-loom'
 }
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-}
+    accessWidenerPath = project(":common").file("src/main/resources/justhammers.accesswidener")
 
-fabricApi {
-    configureDataGeneration()
-}
+    runs {
+        client {
+            source = sourceSets.main
+            ideConfigGenerated = true
+            client()
+        }
 
-configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
-}
-
-dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${rootProject.rei_version}"
-
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
-}
-
-processResources {
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        server {
+            source = sourceSets.main
+            ideConfigGenerated = true
+            server()
+        }
     }
-}
 
-shadowJar {
-    exclude "architectury.common.json"
-
-    configurations = [project.configurations.shadowCommon]
-    setArchiveClassifier "dev-shadow"
-}
-
-remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
-    setArchiveClassifier null
-    setArchivesBaseName("${rootProject.archivesBaseName}-${project.name}") // adds fabric to the maven and curse name
-}
-
-jar {
-    setArchiveClassifier "dev"
-    exclude 'pro/mikey/justhammers/fabric/DataGenerators.class'
-}
-
-sourcesJar {
-    def commonSources = project(":common").sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
-
-publishing {
-    publications {
-        mavenFabric(MavenPublication) {
-            artifactId = "${rootProject.archivesBaseName}-${project.name}" // adds fabric or forge to the maven name
-            from components.java
+    mods {
+        "justhammers" {
+            sourceSet sourceSets.main
+            sourceSet("main", project(":common"))
         }
     }
 }
 
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.officialMojangMappings()
+
+    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+repositories {
+}
+
+java {
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.base.archivesName.get()
+            version project.version
+            from components.java
+        }
+    }
+}
