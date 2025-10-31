@@ -1,25 +1,35 @@
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.10-SNAPSHOT" apply false
-    id "me.modmuss50.mod-publish-plugin" version "0.8.4"
+    id 'java-library'
+    id 'fabric-loom' version '1.12-SNAPSHOT' apply(false)
+    id 'net.neoforged.moddev' version '2.0.112' apply(false)
+    id "me.modmuss50.mod-publish-plugin" version "1.0.0"
     id 'pro.mikey.plugins.insaniam' version "0.1-SNAPSHOT"
 }
 
-architectury {
-    minecraft = rootProject.minecraft_version
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
 }
 
-subprojects {
-    apply plugin: "dev.architectury.loom"
-    apply plugin: "maven-publish"
+version = mod_version
+group = 'pro.mikey.mods'
 
-    loom {
-        silentMojangMappingsLicense()
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+
+    version = mod_version
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = 21
     }
 
-    dependencies {
-        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-        mappings loom.officialMojangMappings()
+    idea {
+        module {
+            downloadSources = true
+            downloadJavadoc = true
+        }
     }
 
     publishing {
@@ -37,25 +47,47 @@ subprojects {
     }
 }
 
-allprojects {
-    apply plugin: "java"
-    apply plugin: "architectury-plugin"
-    apply plugin: "maven-publish"
-
-    archivesBaseName = rootProject.archives_base_name
-    version = rootProject.mod_version
-    group = rootProject.maven_group
+subprojects {
+    base {
+        archivesName = "just-hammers-$project.name"
+    }
 
     repositories {
+        maven {
+            url "https://libraries.minecraft.net"
+            content {
+                includeModule("org.lwjgl", "lwjgl-freetype")
+            }
+        }
     }
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-        options.release = 21
+    if (project.name != "common") {
+        dependencies {
+            api project(":common")
+        }
+
+        jar {
+            from project(":common").sourceSets.main.output
+        }
     }
 
-    java {
-        withSourcesJar()
+    def replaceProperties = [
+            mod_id: mod_id,
+            minecraft_version: minecraft_version,
+            minecraft_version_range: minecraft_version_range.replace("%base%", minecraft_version),
+            neoforge_version: neoforge_version,
+            neoforge_version_range: neoforge_version_range,
+            fabric_loader_version: fabric_loader_version,
+            fabric_api_version: fabric_api_version,
+            version: version,
+    ]
+
+    processResources {
+        inputs.properties replaceProperties
+
+        filesMatching(["META-INF/neoforge.mods.toml", "fabric.mod.json", "META-INF/mods.toml"]) {
+            expand replaceProperties
+        }
     }
 }
 
@@ -103,24 +135,20 @@ publishMods {
 
     curseforge("curseforgeFabric") {
         from(curseForgeOptions, fabricOptions)
-        requires("architectury-api")
         requires("fabric-api")
     }
 
     curseforge("curseforgeNeoForge") {
         from(curseForgeOptions, neoForge)
-        requires("architectury-api")
     }
 
     modrinth("modrinthFabric") {
         from(modrinthOptions, fabricOptions)
-        requires("architectury-api")
         requires("fabric-api")
     }
 
     modrinth("modrinthNeoforge") {
         from(modrinthOptions, neoForge)
-        requires("architectury-api")
     }
 
     github {

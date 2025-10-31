@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "justhammers",
+  "id": "${mod_id}",
   "version": "${version}",
   "name": "Just Hammers",
   "description": "Just Hammers!",
@@ -29,8 +29,7 @@
     "justhammers.mixins.json"
   ],
   "depends": {
-    "fabric-api": ">=0.91.0",
-    "minecraft": ">=1.21",
-    "architectury": ">=13.0.0"
+    "fabric-api": ">=${fabric_api_version}",
+    "minecraft": ">=${minecraft_version}"
   }
 }
