@@ -267,6 +267,11 @@ public class HammerItem extends PickaxeItem {
     }
 
     private boolean canDestroy(BlockState targetState, Level level, BlockPos pos) {
+        // Don't break fluid blocks
+        if (!targetState.getFluidState().isEmpty()) {
+            return false;
+        }
+
         if (targetState.getDestroySpeed(level, pos) <= 0) {
             return false;
         }
