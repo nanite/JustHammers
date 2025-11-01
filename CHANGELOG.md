@@ -1,5 +1,16 @@
 # Just Hammers Changelog
 
+## [21.8.1]
+
+### Changed
+
+- The mod no longer requires architectury as a dependency.
+- Minor updates to the toolchain to allow for this move.
+
+### Fixed
+
+- We now fire platform specific events for block break to allow block protection mods to function correctly
+
 ## [21.8.0]
 
 ### Changed
