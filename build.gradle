@@ -119,7 +119,7 @@ publishMods {
     }
 
     def neoForge = publishOptions {
-        file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
+        file = project.provider { project(":neoforge").tasks.jar }.flatMap { it.archiveFile }
         displayName = "[NEOFORGE] Just Hammers ${mod_version}"
         modLoaders.add("neoforge")
     }
@@ -160,9 +160,8 @@ publishMods {
     }
 
     github {
-//        file = project.provider { project(":forge").tasks.remapJar }.flatMap { it.archiveFile }
+        file = project.provider { project(":neoforge").tasks.jar }.flatMap { it.archiveFile }
         additionalFiles.from project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
-        file = project.provider { project(":neoforge").tasks.remapJar }.flatMap { it.archiveFile }
 
         announcementTitle = "[${minecraft_version}] Just Hammers ${mod_version}"
 

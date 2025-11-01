@@ -10,6 +10,7 @@
 ### Fixed
 
 - We now fire platform specific events for block break to allow block protection mods to function correctly
+- Fluid / Waterlogged blocks will no longer be broken when within range of the hammer
 
 ## [21.8.0]
 
