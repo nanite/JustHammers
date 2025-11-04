@@ -122,7 +122,8 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                             .pattern("aba")
                             .pattern(" ba")
                             .pattern(" b ")
-                            .unlockedBy("has_material", has(material));
+                            .unlockedBy("has_material", has(material))
+                            .save(recipeOutput);
                 }
 
                 private void coreHammer(DeferredResource<Item, HammerItem> hammer, DeferredResource<Item, Item> core, ItemLike material) {
@@ -133,7 +134,8 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                             .pattern("aca")
                             .pattern(" ba")
                             .pattern(" b ")
-                            .unlockedBy("has_material", has(material));
+                            .unlockedBy("has_material", has(material))
+                            .save(recipeOutput);
                 }
 
                 private void core(DeferredResource<Item, Item> result, Item outside, Item inside, Item left, Item right) {
@@ -145,7 +147,8 @@ public class DataGenerators implements DataGeneratorEntrypoint {
                             .pattern("aaa")
                             .pattern("cbd")
                             .pattern("aaa")
-                            .unlockedBy("has_material", has(HammerItems.STONE_HAMMER.get()));
+                            .unlockedBy("has_material", has(HammerItems.STONE_HAMMER.get()))
+                            .save(recipeOutput);
                 }
             };
         }

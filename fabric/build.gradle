@@ -36,9 +36,6 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 }
 
-repositories {
-}
-
 java {
     withSourcesJar()
 }

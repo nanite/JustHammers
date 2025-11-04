@@ -1,5 +1,11 @@
 # Just Hammers Changelog
 
+## [21.8.2]
+
+### Fixed
+
+- 1.21.8 version of the mod missing recipes
+
 ## [21.8.1]
 
 ### Changed

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "a": "minecraft:redstone_block",
+    "b": "justhammers:impact_core",
+    "c": "minecraft:gold_block",
+    "d": "minecraft:gold_block"
+  },
+  "pattern": [
+    "aaa",
+    "cbd",
+    "aaa"
+  ],
+  "result": {
+    "count": 1,
+    "id": "justhammers:reinforced_core"
+  }
+}
