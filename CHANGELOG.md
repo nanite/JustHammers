@@ -1,5 +1,11 @@
 # Just Hammers Changelog
 
+## [21.4.3]
+
+### Fixed
+
+- Switch to using shift check instead of crouching for preventing the hammer from doing it's AOE effect. This means creative flight will now work with holding shift.
+
 ## [21.4.2]
 
 ### Added
