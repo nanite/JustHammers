@@ -150,7 +150,7 @@ public class HammerItem extends PickaxeItem {
             return;
         }
 
-        if (livingEntity.isCrouching()) {
+        if (livingEntity.isShiftKeyDown()) {
             return;
         }
 
