@@ -139,7 +139,7 @@ public class HammerItem extends Item {
             return;
         }
 
-        if (livingEntity.isCrouching()) {
+        if (livingEntity.isShiftKeyDown()) {
             return;
         }
 
