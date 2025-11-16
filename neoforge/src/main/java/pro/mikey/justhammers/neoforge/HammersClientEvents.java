@@ -11,18 +11,12 @@ import pro.mikey.justhammers.client.SelectionOutlineRender;
 public class HammersClientEvents {
     @SubscribeEvent
     public static void onWorldRenderLast(RenderLevelStageEvent.AfterTranslucentBlocks event) {
-
         Minecraft instance = Minecraft.getInstance();
         SelectionOutlineRender.render(
                 instance.level,
-                event.getCamera(),
-                event.getPartialTick(),
+                Minecraft.getInstance().gameRenderer.getMainCamera(),
                 event.getPoseStack(),
-                instance.renderBuffers().bufferSource(),
-                instance.gameRenderer,
-                event.getModelViewMatrix(),
-                instance.gameRenderer.lightTexture(),
-                instance.levelRenderer
+                instance.renderBuffers().bufferSource()
          );
     }
 }

@@ -135,7 +135,7 @@ public class HammerItem extends Item {
     public void causeAoe(Level level, BlockPos pos, BlockState state, ItemStack hammer, LivingEntity livingEntity) {
         if (!(livingEntity instanceof ServerPlayer)) return;
 
-        if (level.isClientSide || state.getDestroySpeed(level, pos) == 0.0F) {
+        if (level.isClientSide() || state.getDestroySpeed(level, pos) == 0.0F) {
             return;
         }
 

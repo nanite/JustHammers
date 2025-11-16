@@ -1,5 +1,11 @@
 # Just Hammers Changelog
 
+## [21.10.0]
+
+### Changed
+
+- Updated to Minecraft 1.21.9/10
+
 ## [21.8.3]
 
 ### Fixed

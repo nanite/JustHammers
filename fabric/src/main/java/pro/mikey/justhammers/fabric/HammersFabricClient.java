@@ -1,18 +1,25 @@
 package pro.mikey.justhammers.fabric;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
+
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import pro.mikey.justhammers.client.SelectionOutlineRender;
 
 public class HammersFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        WorldRenderEvents.BLOCK_OUTLINE.register(this::renderSelectionOutline);
-    }
+        WorldRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, outlineRenderState) -> {
+            ClientLevel world = Minecraft.getInstance().level;
+            SelectionOutlineRender.render(
+                    world,
+                    Minecraft.getInstance().gameRenderer.getMainCamera(),
+                    context.matrices(),
+                    context.consumers()
+            );
 
-    private boolean renderSelectionOutline(WorldRenderContext worldRenderContext, WorldRenderContext.BlockOutlineContext blockOutlineContext) {
-        SelectionOutlineRender.render(worldRenderContext.world(), worldRenderContext.camera(), worldRenderContext.tickCounter(), worldRenderContext.matrixStack(), worldRenderContext.consumers(), worldRenderContext.gameRenderer(), worldRenderContext.projectionMatrix(), worldRenderContext.gameRenderer().lightTexture(), worldRenderContext.worldRenderer());
-        return true;
+            return true;
+        });
     }
 }

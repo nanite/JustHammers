@@ -23,7 +23,7 @@ import java.util.Iterator;
 
 public class SelectionOutlineRender {
 
-    public static void render(ClientLevel world, Camera camera, DeltaTracker v, PoseStack poseStack, MultiBufferSource consumers, GameRenderer gameRenderer, Matrix4f matrix4f, LightTexture lightTexture, LevelRenderer levelRenderer) {
+    public static void render(ClientLevel world, Camera camera, PoseStack poseStack, MultiBufferSource consumers) {
         // Get the player
         if (world == null) {
             return;
@@ -34,7 +34,7 @@ public class SelectionOutlineRender {
             return;
         }
 
-        if (player.isCrouching()) {
+        if (player.isShiftKeyDown()) {
             return;
         }
 

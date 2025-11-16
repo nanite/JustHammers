@@ -27,7 +27,7 @@ public class ServerPlayerGameModeMixinNeoForge {
     /**
      * This is used when we're in creative mode, and we're trying to mine a block
      */
-    @Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayerGameMode;removeBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)Z", ordinal = 0, shift = At.Shift.BEFORE))
+    @Inject(method = "destroyBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayerGameMode;removeBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;ZLnet/minecraft/world/item/ItemStack;)Z", ordinal = 0, shift = At.Shift.BEFORE))
     public void justhammers$beforeRemoveBlock(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir) {
         this.hammerMineBlock(blockPos);
     }
