@@ -6,6 +6,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.level.block.state.BlockState;
@@ -82,7 +83,7 @@ public class SelectionOutlineRender {
 
         // Transform the pose stack to the camera's position
         poseStack.pushPose();
-        poseStack.translate(-camera.getPosition().x(), -camera.getPosition().y(), -camera.getPosition().z());
+        poseStack.translate(-camera.position().x(), -camera.position().y(), -camera.position().z());
 
         // Render the outline
         Iterator<BlockPos> blockPosStream = BlockPos.betweenClosedStream(boundingBox).iterator();
@@ -105,7 +106,7 @@ public class SelectionOutlineRender {
             // Shift the pose stack to the block's position
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
 
-            ShapeRenderer.renderShape(poseStack, consumers.getBuffer(RenderType.lines()), renderShape, 0, 0, 0, 0x59000000);
+            ShapeRenderer.renderShape(poseStack, consumers.getBuffer(RenderTypes.lines()), renderShape, 0, 0, 0, 0xFF000000, 4f);
             poseStack.popPose();
         }
 

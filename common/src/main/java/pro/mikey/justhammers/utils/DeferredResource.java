@@ -2,19 +2,19 @@ package pro.mikey.justhammers.utils;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import pro.mikey.justhammers.Hammers;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 
 public final class DeferredResource<R, T extends R> implements Supplier<T> {
-    private final ResourceLocation location;
+    private final Identifier location;
     private final Supplier<T> creator;
 
     private T instance;
 
-    public DeferredResource(ResourceLocation location, Supplier<T> creator) {
+    public DeferredResource(Identifier location, Supplier<T> creator) {
         this.location = location;
         this.creator = creator;
     }
@@ -23,7 +23,7 @@ public final class DeferredResource<R, T extends R> implements Supplier<T> {
         this(Hammers.id(location), creator);
     }
 
-    public ResourceLocation location() {
+    public Identifier location() {
         return location;
     }
 
