@@ -1,5 +1,11 @@
 # Just Hammers Changelog
 
+## [21.11.1]
+
+### Added
+
+- Add `PT_br` Localization thanks to @PrincessStellar
+
 ## [21.10.0]
 
 ### Changed
