@@ -3,14 +3,15 @@ package pro.mikey.justhammers.fabric;
 import net.fabricmc.fabric.api.client.datagen.v1.provider.FabricModelProvider;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
+import net.fabricmc.fabric.api.datagen.v1.FabricPackOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagsProvider;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
@@ -39,9 +40,9 @@ public class DataGenerators implements DataGeneratorEntrypoint {
         pack.addProvider(ItemTagsGen::new);
     }
 
-    public static class ItemTagsGen extends FabricTagProvider.ItemTagProvider {
-        public ItemTagsGen(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
-            super(output, completableFuture);
+    public static class ItemTagsGen extends FabricTagsProvider<Item> {
+        public ItemTagsGen(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registryLookupFuture) {
+            super(output, Registries.ITEM, registryLookupFuture);
         }
 
         @Override
@@ -61,7 +62,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
     }
 
     public static class RecipeGen extends FabricRecipeProvider {
-        public RecipeGen(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
+        public RecipeGen(FabricPackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
             super(output, registriesFuture);
         }
 
@@ -155,8 +156,8 @@ public class DataGenerators implements DataGeneratorEntrypoint {
     }
 
     public static class LangGen extends FabricLanguageProvider {
-        protected LangGen(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
-            super(dataOutput, "en_us", registryLookup);
+        protected LangGen(FabricPackOutput packOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+            super(packOutput, registryLookup);
         }
 
         @Override
@@ -200,7 +201,7 @@ public class DataGenerators implements DataGeneratorEntrypoint {
     }
 
     public static class ItemModelGen extends FabricModelProvider {
-        public ItemModelGen(FabricDataOutput output) {
+        public ItemModelGen(FabricPackOutput output) {
             super(output);
         }
 

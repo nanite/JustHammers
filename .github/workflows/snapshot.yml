@@ -2,8 +2,9 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - "main"
+      - "mc/*"
 
 jobs:
   build:
@@ -12,9 +13,6 @@ jobs:
     uses: nanite/workflows/.github/workflows/release.yml@v1.3
     with:
       java-version: 25
-      gradle-tasks: build publish publishMods  --no-daemon
+      gradle-tasks: build publish  --no-daemon
     secrets:
       nanite-token: ${{ secrets.NANITE_DEPLOY }}
-      curse-token: ${{ secrets.CURSE_DEPLOY }}
-      modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-      github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -30,6 +30,3 @@ side = "BOTH"
 
 [[mixins]]
 config = "justhammers.mixins.json"
-
-[[mixins]]
-config = "justhammers-common.mixins.json"

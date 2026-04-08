@@ -1,16 +1,15 @@
 plugins {
-    id 'fabric-loom'
+    id 'net.fabricmc.fabric-loom'
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/justhammers.accesswidener")
+//    accessWidenerPath = file("src/main/resources/justhammers.accesswidener")
 }
 
 sourceSets.main.resources { srcDirs += file("src/main/generated") }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
 }
 
 test {

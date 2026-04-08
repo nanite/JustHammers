@@ -1,8 +1,8 @@
 plugins {
     id 'java-library'
-    id 'fabric-loom' version '1.13-SNAPSHOT' apply(false)
-    id 'net.neoforged.moddev' version '2.0.112' apply(false)
-    id "me.modmuss50.mod-publish-plugin" version "1.0.0"
+    id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT' apply(false)
+    id 'net.neoforged.moddev' version '2.0.141' apply(false)
+    id "me.modmuss50.mod-publish-plugin" version "1.1.0"
     id 'pro.mikey.plugins.insaniam' version "0.1-SNAPSHOT"
 }
 
@@ -10,39 +10,26 @@ tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
 }
 
-version = mod_version
-group = 'pro.mikey.mods'
+def isSnapshot = providers.environmentVariable("SNAPSHOT").map { it == "true" }.getOrElse(false)
 
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
 
-    version = mod_version
+
+    version = mod_version + (isSnapshot ? "-SNAPSHOT" : "")
+    group = 'pro.mikey.mods'
 
     tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
-        options.release = 21
+        options.release = 25
     }
 
     idea {
         module {
             downloadSources = true
             downloadJavadoc = true
-        }
-    }
-
-    publishing {
-        repositories {
-            if (providers.environmentVariable("NANITE_DEPLOY").isPresent()) {
-                maven {
-                    url "https://maven.nanite.dev/${providers.environmentVariable("SNAPSHOT").map { "snapshots" }.getOrElse("releases")}"
-                    credentials {
-                        username = "nanite"
-                        password = "${providers.environmentVariable("NANITE_DEPLOY").get()}"
-                    }
-                }
-            }
         }
     }
 }
@@ -54,13 +41,6 @@ subprojects {
 
     repositories {
         maven {
-            url "https://libraries.minecraft.net"
-            content {
-                includeModule("org.lwjgl", "lwjgl-freetype")
-            }
-        }
-
-        maven {
             url = uri("https://modmaven.dev/")
             content {
                 includeGroup "mezz.jei"
@@ -71,7 +51,6 @@ subprojects {
     if (project.name != "common") {
         dependencies {
             api project(":common")
-//            runtimeOnly "mezz.jei:jei-${minecraft_version}-${project.name}:${jei_version}"
         }
 
         jar {
@@ -95,6 +74,28 @@ subprojects {
 
         filesMatching(["META-INF/neoforge.mods.toml", "fabric.mod.json", "META-INF/mods.toml"]) {
             expand replaceProperties
+        }
+    }
+
+    publishing {
+        publications {
+            register("maven${project.name.capitalize()}", MavenPublication) {
+                artifactId = "${rootProject.archives_base_name}-${project.name}"
+                from components.java
+            }
+        }
+
+        repositories {
+            def token = providers.environmentVariable("NANITE_TOKEN");
+            if (token.isPresent()) {
+                maven {
+                    url "https://maven.nanite.dev/releases"
+                    credentials {
+                        username = "nanite"
+                        password = providers.environmentVariable("NANITE_TOKEN").get()
+                    }
+                }
+            }
         }
     }
 }
@@ -128,13 +129,15 @@ publishMods {
         accessToken = providers.environmentVariable("CURSE_TOKEN")
         projectId = "${curseforge_id}"
         minecraftVersions.add("${minecraft_version}")
-        javaVersions.add(JavaVersion.VERSION_21)
+        minecraftVersions.add("26.1.1")
+        javaVersions.add(JavaVersion.VERSION_25)
     }
 
     def modrinthOptions = modrinthOptions {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = "${modrinth_id}"
         minecraftVersions.add("${minecraft_version}")
+        minecraftVersions.add("26.1.1")
     }
 
     curseforge("curseforgeFabric") {

@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom'
+    id 'net.fabricmc.fabric-loom'
 }
 
 fabricApi {
@@ -12,7 +12,7 @@ fabricApi {
 }
 
 loom {
-    accessWidenerPath = project(":common").file("src/main/resources/justhammers.accesswidener")
+//    accessWidenerPath = project(":common").file("src/main/resources/justhammers.accesswidener")
 
     runs {
         configureEach {
@@ -30,10 +30,9 @@ loom {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
 
-    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    implementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 }
 
 java {

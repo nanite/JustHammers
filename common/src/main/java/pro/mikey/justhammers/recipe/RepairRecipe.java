@@ -1,9 +1,14 @@
 package pro.mikey.justhammers.recipe;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
@@ -20,8 +25,13 @@ import pro.mikey.justhammers.config.SimpleJsonConfig;
  * I'm not sure if there would have been a better way of doing this.
  */
 public class RepairRecipe extends CustomRecipe {
-    public RepairRecipe(CraftingBookCategory craftingBookCategory) {
-        super(craftingBookCategory);
+    public static final RepairRecipe INSTANCE = new RepairRecipe();
+
+    public static final MapCodec<RepairRecipe> CODEC = MapCodec.unit(() -> INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RepairRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+
+    public RepairRecipe() {
+        super();
     }
 
     @Override
@@ -64,7 +74,7 @@ public class RepairRecipe extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingInput recipeInput, HolderLookup.Provider provider) {
+    public @NotNull ItemStack assemble(CraftingInput recipeInput) {
         var repairTargets = getRepairTargets(recipeInput);
 
         // This shouldn't be possible, but just in case

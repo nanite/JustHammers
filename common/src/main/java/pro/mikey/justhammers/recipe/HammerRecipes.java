@@ -1,6 +1,5 @@
 package pro.mikey.justhammers.recipe;
 
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import pro.mikey.justhammers.utils.DeferredResource;
@@ -10,5 +9,5 @@ public class HammerRecipes {
             new DeferredResource<>("hammer_repair", () -> new RecipeType<>() {});
 
     public static final DeferredResource<RecipeSerializer<?>, RecipeSerializer<RepairRecipe>> REPAIR_RECIPE_SERIALIZER =
-            new DeferredResource<>("repair", () -> new CustomRecipe.Serializer<>(RepairRecipe::new));
+            new DeferredResource<>("repair", () -> new RecipeSerializer<>(RepairRecipe.CODEC, RepairRecipe.STREAM_CODEC));
 }

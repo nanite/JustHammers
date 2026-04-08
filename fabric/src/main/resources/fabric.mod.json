@@ -25,7 +25,6 @@
     ]
   },
   "mixins": [
-    "justhammers-common.mixins.json",
     "justhammers.mixins.json"
   ],
   "depends": {
