@@ -10,9 +10,10 @@ jobs:
   build:
     if: |
       !contains(github.event.head_commit.message, '[ciskip]')
-    uses: nanite/workflows/.github/workflows/release.yml@v1.3
+    uses: nanite/workflows/.github/workflows/base-java.yml@v1.3
     with:
       java-version: 25
+      use-snapshots: true
       gradle-tasks: build publish  --no-daemon
     secrets:
       nanite-token: ${{ secrets.NANITE_DEPLOY }}

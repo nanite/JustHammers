@@ -17,7 +17,6 @@ allprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
 
-
     version = mod_version + (isSnapshot ? "-SNAPSHOT" : "")
     group = 'pro.mikey.mods'
 
