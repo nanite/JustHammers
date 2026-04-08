@@ -112,16 +112,12 @@ publishMods {
     version = "${mod_version}"
     type = STABLE
 
-    def fabricOptions = publishOptions {
-        file = project.provider { project(":fabric").tasks.jar }.flatMap { it.archiveFile }
-        displayName = "[FABRIC] Just Hammers ${mod_version}"
-        modLoaders.add("fabric")
-    }
-
-    def neoForge = publishOptions {
-        file = project.provider { project(":neoforge").tasks.jar }.flatMap { it.archiveFile }
-        displayName = "[NEOFORGE] Just Hammers ${mod_version}"
-        modLoaders.add("neoforge")
+    def createOptions = { String modLoader ->
+        publishOptions {
+            file = project.provider { project(":$modLoader").tasks.jar }.flatMap { it.archiveFile }
+            displayName = "[${modLoader.toUpperCase()}] Just Hammers ${mod_version}"
+            modLoaders.add(modLoader)
+        }
     }
 
     def curseForgeOptions = curseforgeOptions {
@@ -140,21 +136,21 @@ publishMods {
     }
 
     curseforge("curseforgeFabric") {
-        from(curseForgeOptions, fabricOptions)
+        from(curseForgeOptions, createOptions("fabric"))
         requires("fabric-api")
     }
 
     curseforge("curseforgeNeoForge") {
-        from(curseForgeOptions, neoForge)
+        from(curseForgeOptions, createOptions("neoforge"))
     }
 
     modrinth("modrinthFabric") {
-        from(modrinthOptions, fabricOptions)
+        from(modrinthOptions, createOptions("fabric"))
         requires("fabric-api")
     }
 
     modrinth("modrinthNeoforge") {
-        from(modrinthOptions, neoForge)
+        from(modrinthOptions, createOptions("neoforge"))
     }
 
     github {
