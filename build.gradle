@@ -113,7 +113,7 @@ publishMods {
     type = STABLE
 
     def fabricOptions = publishOptions {
-        file = project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+        file = project.provider { project(":fabric").tasks.jar }.flatMap { it.archiveFile }
         displayName = "[FABRIC] Just Hammers ${mod_version}"
         modLoaders.add("fabric")
     }
@@ -159,7 +159,7 @@ publishMods {
 
     github {
         file = project.provider { project(":neoforge").tasks.jar }.flatMap { it.archiveFile }
-        additionalFiles.from project.provider { project(":fabric").tasks.remapJar }.flatMap { it.archiveFile }
+        additionalFiles.from project.provider { project(":fabric").tasks.jar }.flatMap { it.archiveFile }
 
         announcementTitle = "[${minecraft_version}] Just Hammers ${mod_version}"
 
