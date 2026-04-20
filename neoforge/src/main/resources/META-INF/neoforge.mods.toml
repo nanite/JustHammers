@@ -5,7 +5,7 @@ license = "GPL3"
 
 
 [[mods]]
-modId = "justhammers"
+modId = "${mod_id}"
 version = "${version}"
 displayName = "Just Hammers"
 authors = "ErrorMikey"
@@ -14,17 +14,17 @@ Add hammers to the game that are able to mine in a 3x3, 3x3x3, 5x5x3 and finally
 '''
 displayURL = "https://github.com/nanite/JustHammers"
 
-[[dependencies.justhammers]]
+[[dependencies.${mod_id}]]
 modId = "neoforge"
 required = true
-versionRange = "[21.0,)"
+versionRange = "${neoforge_version_range}"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.justhammers]]
+[[dependencies.${mod_id}]]
 modId = "minecraft"
 required = true
-versionRange = "[1.21,)"
+versionRange = "${minecraft_version_range_maven}"
 ordering = "NONE"
 side = "BOTH"
 

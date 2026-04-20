@@ -3,11 +3,17 @@ plugins {
     id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT' apply(false)
     id 'net.neoforged.moddev' version '2.0.141' apply(false)
     id "me.modmuss50.mod-publish-plugin" version "1.1.0"
-    id 'pro.mikey.plugins.insaniam' version "0.1-SNAPSHOT"
+    id "dev.nanite.nanite-plugin" version "0.1.0-SNAPSHOT"
 }
 
 tasks.named('wrapper', Wrapper).configure {
     distributionType = Wrapper.DistributionType.BIN
+}
+
+nanite {
+    changelog {
+        file = file("./CHANGELOG.md")
+    }
 }
 
 def isSnapshot = providers.environmentVariable("SNAPSHOT").map { it == "true" }.getOrElse(false)
@@ -17,7 +23,7 @@ allprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
 
-    version = mod_version + (isSnapshot ? "-SNAPSHOT" : "")
+    version = isSnapshot ? "${minecraft_version}-SNAPSHOT" : naniteUtils.createModVersion()
     group = 'pro.mikey.mods'
 
     tasks.withType(JavaCompile).configureEach {
@@ -35,7 +41,7 @@ allprojects {
 
 subprojects {
     base {
-        archivesName = "just-hammers-$project.name"
+        archivesName = "${archives_base_name}-$project.name"
     }
 
     repositories {
@@ -59,12 +65,13 @@ subprojects {
 
     def replaceProperties = [
             mod_id: mod_id,
-            minecraft_version: minecraft_version,
-            minecraft_version_range: minecraft_version_range.replace("%base%", minecraft_version),
+            minecraft_version_range_maven: minecraft_version_range_maven,
+            minecraft_version_range_semver: minecraft_version_range_semver,
             neoforge_version: neoforge_version,
             neoforge_version_range: neoforge_version_range,
             fabric_loader_version: fabric_loader_version,
             fabric_api_version: fabric_api_version,
+            fabric_api_version_range: fabric_api_version_range,
             version: version,
     ]
 
@@ -99,23 +106,20 @@ subprojects {
     }
 }
 
-def changelogData = insaniamUtils.createChangelog {
-    file = file('CHANGELOG.md')
-    versionPattern = ~/## \[[^]]+]/
-    fallbackValue = "No changelog provided"
-    version = project.mod_version
+tasks.named("publishMods") {
+    dependsOn tasks.named("createChangelog")
 }
 
 publishMods {
     dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
-    changelog = changelogData.replace("# Just Hammers Changelog", "").trim()
-    version = "${mod_version}"
+    changelog = tasks.named("createChangelog").flatMap { it.outputFile }.map { it.asFile.text }
+    version = project.version
     type = STABLE
 
     def createOptions = { String modLoader ->
         publishOptions {
             file = project.provider { project(":$modLoader").tasks.jar }.flatMap { it.archiveFile }
-            displayName = "[${modLoader.toUpperCase()}] Just Hammers ${mod_version}"
+            displayName = "Just Hammers ${modLoader.capitalize()} ${mod_version}"
             modLoaders.add(modLoader)
         }
     }
@@ -123,16 +127,18 @@ publishMods {
     def curseForgeOptions = curseforgeOptions {
         accessToken = providers.environmentVariable("CURSE_TOKEN")
         projectId = "${curseforge_id}"
-        minecraftVersions.add("${minecraft_version}")
-        minecraftVersions.add("26.1.1")
+        supported_minecraft_versions.split(",").each {
+            minecraftVersions.add(it.trim())
+        }
         javaVersions.add(JavaVersion.VERSION_25)
     }
 
     def modrinthOptions = modrinthOptions {
         accessToken = providers.environmentVariable("MODRINTH_TOKEN")
         projectId = "${modrinth_id}"
-        minecraftVersions.add("${minecraft_version}")
-        minecraftVersions.add("26.1.1")
+        supported_minecraft_versions.split(",").each {
+            minecraftVersions.add(it.trim())
+        }
     }
 
     curseforge("curseforgeFabric") {

@@ -1,5 +1,10 @@
 # Just Hammers Changelog
 
+## [26.1.2.1]
+
+### Changed
+* Updated to NeoForge `26.1.2.21-beta` to resolve a breaking change
+
 ## [26.1.0.1]
 
 ### Changed
