@@ -2,7 +2,6 @@ package pro.mikey.justhammers.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
@@ -14,9 +13,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.joml.Matrix4f;
 import pro.mikey.justhammers.HammerItem;
 import pro.mikey.justhammers.HammerTags;
 
@@ -24,7 +21,7 @@ import java.util.Iterator;
 
 public class SelectionOutlineRender {
 
-    public static void render(ClientLevel world, Camera camera, PoseStack poseStack, MultiBufferSource consumers) {
+    public static void render(ClientLevel world, Camera camera, PoseStack poseStack, SubmitNodeCollector collector) {
         // Get the player
         if (world == null) {
             return;
@@ -106,7 +103,8 @@ public class SelectionOutlineRender {
             // Shift the pose stack to the block's position
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
 
-            ShapeRenderer.renderShape(poseStack, consumers.getBuffer(RenderTypes.lines()), renderShape, 0, 0, 0, 0xFF000000, 4f);
+            collector.submitShapeOutline(poseStack, renderShape, RenderTypes.lines(), 0xFF000000, 4f, true);
+//            ShapeRenderer.renderShape(poseStack, consumers.getBuffer(RenderTypes.lines()), renderShape, 0, 0, 0, 0xFF000000, 4f);
             poseStack.popPose();
         }
 

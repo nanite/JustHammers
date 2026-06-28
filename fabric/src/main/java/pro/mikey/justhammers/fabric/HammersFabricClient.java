@@ -10,16 +10,11 @@ import pro.mikey.justhammers.client.SelectionOutlineRender;
 public class HammersFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        LevelRenderEvents.BEFORE_BLOCK_OUTLINE.register((context, outlineRenderState) -> {
-            ClientLevel world = Minecraft.getInstance().level;
-            SelectionOutlineRender.render(
-                    world,
-                    Minecraft.getInstance().gameRenderer.getMainCamera(),
-                    context.poseStack(),
-                    context.bufferSource()
-            );
-
-            return true;
-        });
+        LevelRenderEvents.COLLECT_SUBMITS.register((event) -> SelectionOutlineRender.render(
+                Minecraft.getInstance().level,
+                Minecraft.getInstance().gameRenderer.mainCamera(),
+                event.poseStack(),
+                event.submitNodeCollector()
+        ));
     }
 }

@@ -1,5 +1,10 @@
 # Just Hammers Changelog
 
+## [26.2.0.1]
+
+### Changed
+* Ported to Minecraft 26.2
+
 ## [26.1.2.1]
 
 ### Changed
