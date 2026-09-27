@@ -20,11 +20,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class XPlatNeoForge implements XPlatShim {
-    @Override
-    public Path configDir() {
-        return FMLPaths.CONFIGDIR.get();
-    }
-
     public boolean fireBlockDropsEvent(ServerLevel level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, List<ItemEntity> drops, @Nullable Entity breaker, ItemStack tool) {
         return NeoForge.EVENT_BUS.post(new BlockDropsEvent(level, pos, state, blockEntity, drops, breaker, tool)).isCanceled();
     }

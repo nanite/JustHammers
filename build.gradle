@@ -1,8 +1,8 @@
 plugins {
     id 'java-library'
-    id 'net.fabricmc.fabric-loom' version '1.15-SNAPSHOT' apply(false)
-    id 'net.neoforged.moddev' version '2.0.141' apply(false)
-    id "me.modmuss50.mod-publish-plugin" version "2.1.0"
+    id 'net.fabricmc.fabric-loom' version '1.17-SNAPSHOT' apply(false)
+    id 'net.neoforged.moddev' version '2.0.147' apply(false)
+    id "me.modmuss50.mod-publish-plugin" version "2.2.0"
     id "dev.nanite.nanite-plugin" version "0.1.0-SNAPSHOT"
 }
 
@@ -16,14 +16,12 @@ nanite {
     }
 }
 
-def isSnapshot = providers.environmentVariable("SNAPSHOT").map { it == "true" }.getOrElse(false)
-
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
 
-    version = isSnapshot ? "${minecraft_version}-SNAPSHOT" : naniteUtils.createModVersion()
+    version = naniteUtils.createModVersion()
     group = 'pro.mikey.mods'
 
     tasks.withType(JavaCompile).configureEach {
@@ -51,6 +49,20 @@ subprojects {
                 includeGroup "mezz.jei"
             }
         }
+        exclusiveContent {
+            forRepository {
+                maven {
+                    url = uri("https://maven.nanite.dev/releases")
+                }
+            }
+            filter {
+                includeGroup "dev.nanite.mods"
+            }
+        }
+    }
+
+    dependencies {
+        api "dev.nanite.mods:nanite-library-${project.name}:${nanite_version}"
     }
 
     if (project.name != "common") {
@@ -133,6 +145,7 @@ publishMods {
         javaVersions.add(JavaVersion.VERSION_25)
         client = true
         server = true
+        requires("nanite-library")
     }
 
     def modrinthOptions = modrinthOptions {
@@ -142,6 +155,7 @@ publishMods {
             minecraftVersions.add(it.trim())
         }
         environment = CLIENT_AND_SERVER
+        requires("nanite-library")
     }
 
     curseforge("curseforgeFabric") {

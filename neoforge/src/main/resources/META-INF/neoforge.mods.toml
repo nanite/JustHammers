@@ -28,5 +28,12 @@ versionRange = "${minecraft_version_range_maven}"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.${mod_id}]]
+modId = "nanitelibrary"
+required = true
+versionRange = ">=26.3.0.6"
+ordering = "NONE"
+side = "BOTH"
+
 [[mixins]]
 config = "justhammers.mixins.json"

@@ -19,11 +19,6 @@ import java.util.List;
 
 public class XPlatFabric implements XPlatShim {
     @Override
-    public Path configDir() {
-        return FabricLoader.getInstance().getConfigDir();
-    }
-
-    @Override
     public int getBlockXpAmount(BlockPos pos, BlockState state, Level level, Entity entity, ItemStack tool) {
         return -1;
     }

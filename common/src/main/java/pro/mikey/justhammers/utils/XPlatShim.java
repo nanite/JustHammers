@@ -15,8 +15,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 public interface XPlatShim {
-    Path configDir();
-
     boolean fireBlockDropsEvent(ServerLevel level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, List<ItemEntity> drops, @Nullable Entity breaker, ItemStack tool);
 
     int getBlockXpAmount(BlockPos pos, BlockState state, Level level, Entity entity, ItemStack tool);

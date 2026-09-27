@@ -1,10 +1,7 @@
 package pro.mikey.justhammers.recipe;
 
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -17,7 +14,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pro.mikey.justhammers.HammerItem;
-import pro.mikey.justhammers.config.SimpleJsonConfig;
+import pro.mikey.justhammers.HammersConfig;
 
 /**
  * Allows a hammer to be repaired using the appropriate repair item.
@@ -52,7 +49,7 @@ public class RepairRecipe extends CustomRecipe {
         // Repair is calculated as a percentage of the max damage. If the max damage is 1000 and the repair percentage is 33.33%, then 333 durability is restored.
         // How many items would it take to get the current damage to 0?
         boolean isNetheriteHammer = isRepairItem(hammer, new ItemStack(Items.NETHERITE_INGOT));
-        var repairPercentage = isNetheriteHammer ? SimpleJsonConfig.INSTANCE.durabilityRepairPercentageNetherite.get().getAsDouble() : SimpleJsonConfig.INSTANCE.durabilityRepairPercentage.get().getAsDouble();
+        var repairPercentage = isNetheriteHammer ? HammersConfig.DURABILITY_REPAIR_PERCENTAGE_NETHERITE.get() : HammersConfig.DURABILITY_REPAIR_PERCENTAGE.get();
         var repairAmount = Math.floor((hammer.getMaxDamage() / 100D) * repairPercentage);
 
         // Figure out how many items are needed to repair the hammer
@@ -88,7 +85,7 @@ public class RepairRecipe extends CustomRecipe {
         var repairedHammer = hammer.copy();
         // Repair is calculated as a percentage of the max damage. This assumes that the max damage is 100% meaning that if the repair percentage is 33.33%, then 33.33% of the max damage is restored.
         boolean isNetheriteHammer = isRepairItem(hammer, new ItemStack(Items.NETHERITE_INGOT));
-        var percentage = isNetheriteHammer ? SimpleJsonConfig.INSTANCE.durabilityRepairPercentageNetherite.get().getAsDouble() : SimpleJsonConfig.INSTANCE.durabilityRepairPercentage.get().getAsDouble();
+        var percentage = isNetheriteHammer ? HammersConfig.DURABILITY_REPAIR_PERCENTAGE_NETHERITE.get() : HammersConfig.DURABILITY_REPAIR_PERCENTAGE.get();
         var repairAmount = Math.floor((hammer.getMaxDamage() / 100D) * percentage);
 
         var currentDamage = hammer.getDamageValue();

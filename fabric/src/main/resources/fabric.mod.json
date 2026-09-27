@@ -29,6 +29,7 @@
   ],
   "depends": {
     "fabric-api": "${fabric_api_version_range}",
-    "minecraft": "${minecraft_version_range_semver}"
+    "minecraft": "${minecraft_version_range_semver}",
+    "nanitelibrary": ">=26.3.0.6"
   }
 }

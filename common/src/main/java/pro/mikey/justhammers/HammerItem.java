@@ -24,7 +24,6 @@ import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import pro.mikey.justhammers.config.SimpleJsonConfig;
 import net.minecraft.world.phys.Vec3;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,7 +59,7 @@ public class HammerItem extends Item {
     public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, TooltipDisplay tooltipDisplay, Consumer<Component> consumer, TooltipFlag tooltipFlag) {
         consumer.accept(Component.translatable("justhammers.tooltip.size", this.radius, this.radius, this.depth).withStyle(ChatFormatting.GRAY));
 
-        if (SimpleJsonConfig.INSTANCE.disabledDurabilityTooltip.get().getAsBoolean()) {
+        if (HammersConfig.DISABLED_DURABILITY_TOOLTIP.get()) {
             return;
         }
 
@@ -118,7 +117,7 @@ public class HammerItem extends Item {
 
     @Override
     public float getDestroySpeed(ItemStack itemStack, BlockState blockState) {
-        if (SimpleJsonConfig.INSTANCE.allowHammerBreaking.get().getAsBoolean()) {
+        if (HammersConfig.ALLOW_HAMMER_BREAKING.get()) {
             return super.getDestroySpeed(itemStack, blockState);
         }
 
@@ -174,7 +173,7 @@ public class HammerItem extends Item {
 
             // Prevent the hammer from breaking if the damage is too high
             boolean isBroken = (hammerStack.getDamageValue() + (damage + 1)) >= hammerStack.getMaxDamage() - 1;
-            if (SimpleJsonConfig.INSTANCE.allowHammerBreaking.get().getAsBoolean()) {
+            if (HammersConfig.ALLOW_HAMMER_BREAKING.get()) {
                 isBroken = hammerStack.getDamageValue() + (damage + 1) >= hammerStack.getMaxDamage();
             }
 

@@ -1,5 +1,11 @@
 # Just Hammers Changelog
 
+## [26.3.0.1]
+
+### Changed
+* Ported to Minecraft 26.3
+* JustHammers now requires Nanite Library as a dependency. This is a library that provides common functionality for Nanite mods.
+
 ## [26.2.0.1]
 
 ### Changed
