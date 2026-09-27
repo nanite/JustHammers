@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:stone_hammer"
+        "recipes": "justhammers:stone_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

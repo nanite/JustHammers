@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:netherite_impact_hammer"
+        "recipes": "justhammers:netherite_impact_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

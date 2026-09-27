@@ -30,5 +30,7 @@
   "item.justhammers.stone_reinforced_impact_hammer": "Stone Reinforced Impact Hammer",
   "itemGroup.justhammers.justhammers_tab": "Just Hammers",
   "justhammers.tooltip.durability_warning": "Hammer durability nearing 0%!",
-  "justhammers.tooltip.size": "Mines a %sx%sx%s area"
+  "justhammers.tooltip.size": "Mines a %sx%sx%s area",
+  "tag.block.justhammers.hammer_no_smashy": "Hammers Cannot Break This Block",
+  "tag.item.justhammers.hammer": "Hammers"
 }

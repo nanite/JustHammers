@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:diamond_reinforced_hammer"
+        "recipes": "justhammers:diamond_reinforced_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

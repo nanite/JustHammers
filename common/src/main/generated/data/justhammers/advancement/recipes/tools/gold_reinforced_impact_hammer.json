@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:gold_reinforced_impact_hammer"
+        "recipes": "justhammers:gold_reinforced_impact_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

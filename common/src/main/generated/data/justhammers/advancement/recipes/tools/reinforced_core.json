@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:reinforced_core"
+        "recipes": "justhammers:reinforced_core"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

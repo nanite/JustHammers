@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "justhammers:gold_destructor_hammer"
+        "recipes": "justhammers:gold_destructor_hammer"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
